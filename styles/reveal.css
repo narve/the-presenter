@@ -1,0 +1,229 @@
+/*p, section > div {*/
+/*    border-bottom: 2px dotted black;*/
+/*}*/
+
+@import url("https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.css");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/theme/dracula.min.css");
+
+@import url("https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/highlight/monokai.min.css");
+@import url('./mermaid.css');
+
+.reveal section.tbc::after {
+    content: "-->";
+}
+
+.reveal pre code {
+    max-height: 600px;
+}
+
+a[target="_blank"] {
+    &::after {
+        content: "↗";
+    }
+}
+
+section h1 {
+    font-size: 2.5em !important;
+}
+
+section h2 {
+    font-size: 1em !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.reveal section ul, section li {
+    margin-left: 0;
+}
+
+section footer {
+    position: fixed;
+    bottom: -5em;
+    font-size: small;
+    /*outline: 1px solid orange;*/
+}
+
+img.plantuml {
+    /*scale: 2;*/
+    display: flex;
+    margin: auto;
+    /*width: 100%;*/
+    aspect-ratio: auto 1 / 1;
+    max-height: 600px;
+    max-width: 800px;
+    /*width: 100%;*/
+    /*height: auto;*/
+}
+
+section.task ol {
+    list-style-type: lower-alpha;
+}
+
+/* Examples within presentations are in p or ul elements,
+not in pre:
+ */
+section :is(p, ul, form) {
+    :is(input[type='checkbox'], section input[type="radio"]) {
+        width: 1em;
+        height: 1em;
+    }
+
+    input, select {
+        font-size: 1em;
+    }
+
+    label {
+        display: block;
+    }
+}
+
+
+.reveal.reveal pre {
+    /*line-height: 1em;*/
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    width: 100%;
+}
+
+section {
+    text-align: left;
+    margin-left: 0.5em;
+    /*padding-right: 22px;*/
+}
+
+section p button {
+    font-size: x-large;
+    margin-left: 1em;
+"
+}
+
+section *:is(p, ul) code {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+section.small {
+    font-size: 1ch;
+
+    p {
+        max-width: 20em;
+    }
+
+    img {
+        float: right;
+    }
+}
+
+section:has(figure) {
+
+    figure, img {
+        width: 80%;
+        margin: 0;
+        padding: 0;
+
+        /*float: right;*/
+        /*display: none;*/
+    }
+}
+
+
+/*body {*/
+/*    counter-reset: task;*/
+/*}*/
+/*section.task {*/
+/*    counter-increment: task;*/
+/*}*/
+
+
+/*pre {*/
+/*    position: relative;*/
+/*    overflow: auto;*/
+
+/*    !* make space  *!*/
+/*    margin: 5px 0;*/
+/*    padding: 1.75rem 0 1.75rem 1rem;*/
+/*    border-radius: 10px;*/
+/*}*/
+
+pre:has(code) button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+
+    font-size: 0.9rem;
+    padding: 0.15rem;
+    background-color: #828282;
+
+    border: ridge 1px #7b7b7c;
+    border-radius: 5px;
+    text-shadow: #c4c4c4 0 0 2px;
+}
+
+pre[class*="language-"] button:hover {
+    cursor: pointer;
+    background-color: #bcbabb;
+}
+
+button.toggle-tasks {
+    position: absolute;
+    top: 0;
+    right: 0;
+    vertical-align: bottom;
+}
+
+div.task {
+    display: none !important;
+}
+
+section.task > *:first-child::before {
+    /*content: "Oppgave " counter(task) ": ";*/
+    content: "Oppgave: ";
+}
+
+section.task.challenge > *::before {
+    /*border-top: 2px dotted magenta;*/
+    content: "Ekstra-oppgave: ";
+
+}
+
+:root {
+    --code-color-a: red;
+    --code-color-b: orange;
+    --code-color-c: green;
+}
+
+section p {
+    .a {
+        color: var(--code-color-a);
+    }
+
+    .b {
+        color: var(--code-color-b);
+    }
+
+    .c {
+        color: var(--code-color-c);
+    }
+}
+
+code .a, code .b, code .c {
+    text-decoration: underline;
+    /*text-underline-style: double;*/
+    text-decoration-style: double;
+}
+
+code .a {
+    color: var(--code-color-a);
+    text-decoration-color: var(--code-color-a);
+}
+
+code .b {
+    color: var(--code-color-b);
+    text-decoration-color: var(--code-color-b);
+}
+
+code .c {
+    color: var(--code-color-c);
+    text-decoration-color: var(--code-color-c);
+}

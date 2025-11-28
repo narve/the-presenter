@@ -1,0 +1,8 @@
+/* src/style/presentation.css */
+:root {
+    --mermaid-edge-stroke: #ff0000; /* Change to your preferred color */
+}
+
+svg  .edgePaths path {
+    stroke: var(--mermaid-edge-stroke) !important;
+}

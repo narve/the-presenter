@@ -1,0 +1,35 @@
+#main-console, .console {
+
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    opacity: 0.8;
+
+    background-color: #111;
+    color: #39ff14;
+    font-family: "Fira Mono", "Consolas", "Monaco", "monospace";
+    font-size: 1rem;
+    padding: 1em;
+    border-radius: 6px;
+    border: 2px solid #222;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    min-height: 200px;
+    width: 100%;
+    letter-spacing: 0.5px;
+    line-height: 1.5;
+    overflow-y: auto;
+
+    display: block;
+    /*width: 1000px;*/
+    /*min-width: 800px;*/
+    margin: 2em auto;
+    box-sizing: border-box;
+
+    output {
+        display: block;
+
+        &.error {
+            color: #ff4c4c;
+        }
+    }
+}

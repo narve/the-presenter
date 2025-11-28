@@ -4,23 +4,30 @@ export class Console {
     #element;
 
     log(message) {
-        this.#messages.push({type: 'log', message});
+        this.#messages.push({type: 'info', message})
+    }
+
+    error(message) {
+        this.#messages.push({type: 'error', message})
     }
 
     mount(element) {
         this.#element = element;
-        this.#timeout = setInterval(() => this.tick(), 1000 / 60);
+        this.#timeout = setInterval(() => this.tick(), 200)
     }
 
     tick() {
-        while (this.#messages.length > 0) {
-            const {type, message} = this.#messages.shift();
-            console.log('[console]', message);
-            const messageElement = document.createElement('output');
-            messageElement.classList.add(type);
-            messageElement.textContent = message;
-            this.#element.appendChild(messageElement);
-            this.#element.scrollTop = this.#element.scrollHeight;
+        if (this.#messages.length > 0) {
+            const {type, message} = this.#messages.shift()
+            console.log(`[${type}]`, message)
+            const messageElement = document.createElement('output')
+            messageElement.classList.add(type)
+            messageElement.textContent = message
+            this.#element.appendChild(messageElement)
+            this.#element.scrollTop = this.#element.scrollHeight
+            if (this.#messages.length > 0) {
+                setTimeout(() => this.tick(), 50)
+            }
         }
     }
 
