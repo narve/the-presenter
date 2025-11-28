@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ThePresenter!</title>
+    <script src="scripts/console.js" type="module"></script>
+    <script src="scripts/main.js" type="module"></script>
+    <link rel="stylesheet" href="styles/console.css">
+
+    <script type="javascript">
+        import {Console} from './scripts/console.js';
+
+        console.log('loading');
+
+
+        window.onload = function () {
+            console.log('loading');
+            const consoleInstance = new Console();
+            consoleInstance.mount(document.getElementById(('main-console')));
+
+            consoleInstance.log("Hello, ThePresenter is running!");
+        };
+
+
+    </script>
+</head>
+<body>
+
+<h1>Welcome to ThePresenter!</h1>
+<output id="main-console"></output>
+
+
+</body>
+</html>
