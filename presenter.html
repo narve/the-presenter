@@ -5,25 +5,50 @@
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
 
     <title>ThePresenter!</title>
+
+    <link rel="stylesheet" href="styles/console.css">
+
+
+    <script src="scripts/console.js" type="module"></script>
+    <script src="scripts/main.js" type="module"></script>
+
+    <script type="javascript">
+        import {Console} from './scripts/console.js'
+
+        window.onload = function () {
+            const consoleInstance = new Console()
+            consoleInstance.mount(document.getElementById(('main-console')))
+
+            consoleInstance.log("Hello, ThePresenter is running!")
+        };
+
+
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.remove('no-script')
+            console.log('Javascript is enabled!')
+        })
+    </script>
+    <style>
+        body.no-script *:not(.no-script) {
+            display: none;
+            visibility: hidden;
+        }
+
+        body:not(.no-script) .no-script {
+            display: none;
+            visibility: hidden;
+        }
+    </style>
 </head>
-<body>
+<body class="no-script">
 
+<div class="no-script">You really need javascript for this to work!</div>
 
-<form method="get" action="index.html">
-    <label>
-        Content URL:
-        <input type="text" name="url" value="https://tangen-2it-utvikling.netlify.app/content/html-001">
-    </label>
-    <label>
-        Mode:
-        <select name="mode">
-            <option value="reveal">Reveal.JS</option>
-        </select>
-    </label>
-    <label>
-        <button type="submit">Open ThePresenter!</button>
-    </label>
-</form>
+<output id="main-console" class="console"></output>
+
 
 </body>
 </html>
