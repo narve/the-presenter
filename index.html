@@ -4,20 +4,44 @@
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
 
-    <title>ThePresenter!</title>
+    <title>ThePresenter! 🎬</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
 
     <style>
+        body {
+            display: flex;
+        }
+
+        main {
+            max-width: 40em;
+            margin: auto auto;
+        }
+
         label {
             display: block;
             margin-bottom: 1em;
-            width: 100%;
+            /*min-width: 100em;*/
+
+            input[type="text"] {
+                display: block;
+            }
+
+            p {
+                font-size: small;
+                font-weight: bold;
+                margin: 0.5em 0 0 1em;
+
+                &::before {
+                    content: "ℹ️ ";
+                }
+            }
         }
 
 
         form {
-            border: 2px solid black;
-            min-width: 120em;
-            width: 120em;
+            /*border: 2px solid black;*/
+            /*min-width: 120em;*/
+            /*width: 120em;*/
         }
     </style>
 </head>
@@ -30,29 +54,40 @@
     <p>Currently, only Reveal.JS and Impress mode is supported.</p>
 
     <form method="get" action="presenter.html">
-        <label>
-            Content URL:
-            <input type="text" size="80" name="url" value="https://tangen-2it-utvikling.netlify.app/content/html-001">
-        </label>
-        <label>
-            Mode:
-            <select name="mode">
-                <option value="reveal">Reveal.JS</option>
-                <option value="impress">Impress</option>
-            </select>
-        </label>
-        <label>
-            Shuffle Slides (if supported). This does not shuffle
-            the order of the slides, but the positioning.
-            <input type="checkbox" name="shuffle" value="true">
-        </label>
-        <label>
-            Add some rotation funkiness (if supported).
-            <input type="checkbox" name="rotate" value="true">
-        </label>
-        <label>
-            <button type="submit">Open ThePresenter!</button>
-        </label>
+        <fieldset>
+            <label>
+                Content URL:
+                <input type="text" size="80" name="url"
+                       value="https://tangen-2it-utvikling.netlify.app/content/html-001">
+            </label>
+            <label>
+                Mode:
+                <select name="mode">
+                    <option value="reveal">Reveal.JS</option>
+                    <option value="impress">Impress</option>
+                </select>
+            </label>
+        </fieldset>
+        <fieldset>
+            <legend>Impress-specific options</legend>
+            <div>
+                <label>
+                    Shuffle Slides (if supported).
+                    <input type="checkbox" name="shuffle" value="true">
+                    <p>
+                        This does not shuffle
+                        the order of the slides, but the positioning.
+                        This means a lot more moving around when presenting,
+                        for good or bad 😄
+                    </p>
+                </label>
+            </div>
+            <label>
+                Add some rotation funkiness (if supported).
+                <input type="checkbox" name="rotate" value="true">
+            </label>
+        </fieldset>
+        <button type="submit">Open ThePresenter!</button>
     </form>
 </main>
 

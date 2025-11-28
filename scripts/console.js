@@ -1,7 +1,12 @@
 export class Console {
     #messages = [];
-    #timeout;
+    #interval;
     #element;
+
+    debug(args) {
+        // this.#messages.push({type: 'debug', message: args})
+        console.debug(args)
+    }
 
     log(message) {
         this.#messages.push({type: 'info', message})
@@ -13,7 +18,11 @@ export class Console {
 
     mount(element) {
         this.#element = element;
-        this.#timeout = setInterval(() => this.tick(), 200)
+        this.#interval = setInterval(() => this.tick(), 200)
+    }
+
+    unmount() {
+        clearInterval(this.#interval)
     }
 
     tick() {
