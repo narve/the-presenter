@@ -1,12 +1,15 @@
-/*p, section > div {*/
-/*    border-bottom: 2px dotted black;*/
-/*}*/
-
 @import url("https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.css");
 @import url("https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/theme/dracula.min.css");
-
 @import url("https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/highlight/monokai.min.css");
 @import url('./mermaid.css');
+
+body.presentation-mode-reveal {
+
+}
+
+.reveal {
+    /*outline: 3px dotted pink;*/
+}
 
 .reveal section.tbc::after {
     content: "-->";

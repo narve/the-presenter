@@ -5,9 +5,9 @@ import * as RevealMermaidModule
 
 import plantumlEncoder from 'https://cdn.jsdelivr.net/npm/plantuml-encoder@1.4.0/+esm'
 
-export function initializeReveal() {
-    console.log('RevealHighlight: ', RevealHighlight)
-    console.log('Mermaid: ', RevealMermaidModule)
+export function initializeReveal(consoleInstance = console) {
+    consoleInstance.log('RevealHighlight: ', RevealHighlight)
+    consoleInstance.log('Mermaid: ', RevealMermaidModule)
 
     const RevealMermaid = RevealMermaidModule.default()
 
@@ -18,7 +18,7 @@ export function initializeReveal() {
 
     // Fix document structure if needed:
     if (!document.querySelector('.reveal')) {
-        console.log('Wrapping slides in .reveal > .slides')
+        consoleInstance.log('Wrapping slides in .reveal > .slides')
         const slides = document.createElement('div');
         slides.classList.add('slides');
         while (root.firstChild) {
@@ -49,12 +49,12 @@ export function initializeReveal() {
     // const shouldShowTasks = document.cookie.indexOf('showtasks') >= 0 || document.location.search.includes('show-tasks')
     const shouldShowTasks = localStorage.getItem('showtasks') === 'true'
     if (!shouldShowTasks) {
-        console.log('Removing task sections')
+        consoleInstance.log('Removing task sections')
         for (const e of document.querySelectorAll(".task")) {
             e.remove();
         }
     } else {
-        console.log('Keeping task sections')
+        consoleInstance.log('Keeping task sections')
     }
 
     document.querySelectorAll("pre code:not(.data-no-trim)")
@@ -69,7 +69,7 @@ export function initializeReveal() {
         button.classList.add('toggle-tasks');
         button.innerText = shouldShowTasks ? 'Skjul oppgaver' : 'Vis oppgaver';
         button.onclick = () => {
-            console.log('Toggling tasks', 'old=', shouldShowTasks);
+            consoleInstance.log('Toggling tasks', 'old=', shouldShowTasks);
             localStorage.setItem('showtasks', shouldShowTasks ? 'false' : 'true');
             document.cookie = shouldShowTasks
                 ? 'showtasks=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/'

@@ -6,10 +6,17 @@ console.log('loading');
 
 window.onload = async function () {
 
+    // const config = {
+    //     url: 'https://tangen-2it-utvikling.netlify.app/content/html-001',
+    //     mode: 'reveal',
+    // }
+
+    const searchParams = new URLSearchParams(window.location.search)
     const config = {
-        url: 'https://tangen-2it-utvikling.netlify.app/content/database-02',
+        url: searchParams.get('url'),
         mode: 'reveal',
     }
+
 
     console.log('loading')
     const consoleInstance = new Console()
@@ -27,30 +34,30 @@ window.onload = async function () {
         try {
             const response = await fetch(proxiedUrl)
             const responseText = await response.text()
-            const responseType = response.headers.get('content-type') || 'unknown'
+            // const responseType = response.headers.get('content-type') || 'unknown'
             consoleInstance.log("Fetched content from URL: " + config.url)
-            consoleInstance.log("   Content type: " + responseType)
-            consoleInstance.log("   Content length: " + responseText.length + " characters")
-            consoleInstance.error("NOW WHAT??")
+            // consoleInstance.log("   Content type: " + responseType)
+            // consoleInstance.log("   Content length: " + responseText.length + " characters")
             const domParser = new DOMParser()
             const doc = domParser.parseFromString(responseText, 'text/html')
-            consoleInstance.log("Parsed fetched content into DOM document.")
-            // we will duplicate all document.body children into current document body
+            // consoleInstance.log("Parsed fetched content into DOM document.")
+
             Array.from(doc.body.children).forEach(child => {
                 document.body.appendChild(document.importNode(child, true))
             });
-            consoleInstance.log("Appended fetched content to current document body.")
-
-            initializeReveal()
+            consoleInstance.log("Inserting content into current document")
 
             // Add a style-element, pointing to reveal.css, after the fetch:
             const linkElement = document.createElement('link')
             linkElement.rel = 'stylesheet'
-            linkElement.href = 'https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css'
+            linkElement.href = 'styles/custom-reveal.css'
             document.head.appendChild(linkElement)
             consoleInstance.log("Added reveal.css stylesheet to document.")
+            initializeReveal(consoleInstance)
+            consoleInstance.log("Reveal initialized")
 
-            setTimeout(() => consoleElement.style.opacity = "0.1", 1000);
+            consoleInstance.log('All done! Enjoy the presentation!')
+            consoleElement.classList.add('fade-out')
 
         } catch (error) {
             consoleInstance.error("Fetch error: " + error);
