@@ -14,7 +14,6 @@
         }
 
 
-
         form {
             border: 2px solid black;
             min-width: 120em;
@@ -28,7 +27,7 @@
     <h1>ThePresenter!</h1>
     <p>This is a tool to present web-based content in presentation mode.</p>
     <p>Enter the URL of the content you want to present, and select the presentation mode.</p>
-    <p>Currently, only Reveal.JS mode is supported.</p>
+    <p>Currently, only Reveal.JS and Impress mode is supported.</p>
 
     <form method="get" action="presenter.html">
         <label>
@@ -39,7 +38,17 @@
             Mode:
             <select name="mode">
                 <option value="reveal">Reveal.JS</option>
+                <option value="impress">Impress</option>
             </select>
+        </label>
+        <label>
+            Shuffle Slides (if supported). This does not shuffle
+            the order of the slides, but the positioning.
+            <input type="checkbox" name="shuffle" value="true">
+        </label>
+        <label>
+            Add some rotation funkiness (if supported).
+            <input type="checkbox" name="rotate" value="true">
         </label>
         <label>
             <button type="submit">Open ThePresenter!</button>
