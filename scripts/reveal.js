@@ -5,20 +5,20 @@ import * as RevealMermaidModule
 
 import plantumlEncoder from 'https://cdn.jsdelivr.net/npm/plantuml-encoder@1.4.0/+esm'
 
-export function initializeReveal(consoleInstance = console) {
-    consoleInstance.log('RevealHighlight: ', RevealHighlight)
-    consoleInstance.log('Mermaid: ', RevealMermaidModule)
+export function initializeReveal(config) {
+    const konsole = config.console
+    konsole.log('RevealHighlight: ', RevealHighlight)
+    konsole.log('Mermaid: ', RevealMermaidModule)
 
     const RevealMermaid = RevealMermaidModule.default()
 
-    const root = document.getElementById('impress')
-        || document.querySelector('body > .reveal > .slides')
-        || document.querySelector('main article')
-        || document.body
+    const root = config.rootQuerySelectors
+        .map(selector => document.querySelector(selector))
+        .find(element => element !== null)
 
     // Fix document structure if needed:
     if (!document.querySelector('.reveal')) {
-        consoleInstance.log('Wrapping slides in .reveal > .slides')
+        konsole.log('Wrapping slides in .reveal > .slides')
         const slides = document.createElement('div');
         slides.classList.add('slides');
         while (root.firstChild) {
@@ -49,36 +49,36 @@ export function initializeReveal(consoleInstance = console) {
     // const shouldShowTasks = document.cookie.indexOf('showtasks') >= 0 || document.location.search.includes('show-tasks')
     const shouldShowTasks = localStorage.getItem('showtasks') === 'true'
     if (!shouldShowTasks) {
-        consoleInstance.log('Removing task sections')
+        konsole.log('Removing task sections')
         for (const e of document.querySelectorAll(".task")) {
             e.remove();
         }
     } else {
-        consoleInstance.log('Keeping task sections')
+        konsole.log('Keeping task sections')
     }
 
     document.querySelectorAll("pre code:not(.data-no-trim)")
         .forEach((block) => {
             block.setAttribute('data-trim', true)
         })
-
-    // If on local-host, on first page, add a button to toggle task-showing:
-
-    if (document.location.hostname === 'localhost') {
-        const button = document.createElement('button');
-        button.classList.add('toggle-tasks');
-        button.innerText = shouldShowTasks ? 'Skjul oppgaver' : 'Vis oppgaver';
-        button.onclick = () => {
-            consoleInstance.log('Toggling tasks', 'old=', shouldShowTasks);
-            localStorage.setItem('showtasks', shouldShowTasks ? 'false' : 'true');
-            document.cookie = shouldShowTasks
-                ? 'showtasks=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/'
-                : 'showtasks=true; expires=Thu, 01 Jan 2099 00:00:00 UTC; path=*';
-            document.location.reload();
-        }
-        const firstSection = document.querySelector('section');
-        firstSection.appendChild(button);
-    }
+    //
+    // // If on local-host, on first page, add a button to toggle task-showing:
+    //
+    // if (document.location.hostname === 'localhost') {
+    //     const button = document.createElement('button');
+    //     button.classList.add('toggle-tasks');
+    //     button.innerText = shouldShowTasks ? 'Skjul oppgaver' : 'Vis oppgaver';
+    //     button.onclick = () => {
+    //         konsole.log('Toggling tasks', 'old=', shouldShowTasks);
+    //         localStorage.setItem('showtasks', shouldShowTasks ? 'false' : 'true');
+    //         document.cookie = shouldShowTasks
+    //             ? 'showtasks=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/'
+    //             : 'showtasks=true; expires=Thu, 01 Jan 2099 00:00:00 UTC; path=*';
+    //         document.location.reload();
+    //     }
+    //     const firstSection = document.querySelector('section');
+    //     firstSection.appendChild(button);
+    // }
 
 
     // Add copy button to code-blocks:

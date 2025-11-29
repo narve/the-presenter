@@ -14,7 +14,7 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
     min-height: 200px;
     width: 100%;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
     line-height: 1.5;
     overflow-y: auto;
 
@@ -25,7 +25,9 @@
     box-sizing: border-box;
 
     output {
+        all: revert;
         display: block;
+        text-align: left!important;
 
         &.error {
             color: #ff4c4c;
@@ -39,4 +41,14 @@
 
 #main-console.fade-out {
     opacity: 0.0;
+}
+
+.loading-indicator {
+    animation: blink 1s infinite;
+    color: #666;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
 }

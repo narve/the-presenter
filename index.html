@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
 
-    <title>ThePresenter! 🎬</title>
+    <title>The Presenter! 🎬</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
 
     <style>
@@ -48,7 +48,7 @@
 <body>
 
 <main>
-    <h1>ThePresenter!</h1>
+    <h1>The Presenter!</h1>
     <p>This is a tool to present web-based content in presentation mode.</p>
     <p>Enter the URL of the content you want to present, and select the presentation mode.</p>
     <p>Currently, only Reveal.JS and Impress mode is supported.</p>
@@ -58,7 +58,9 @@
             <label>
                 Content URL:
                 <input type="text" size="80" name="url"
-                       value="https://tangen-2it-utvikling.netlify.app/content/html-001">
+                       data-value="https://tangen-2it-utvikling.netlify.app/content/html-001"
+                       value="http://localhost:63342/the-presenter/examples/basic.html"
+                >
             </label>
             <label>
                 Mode:
@@ -87,8 +89,81 @@
                 <input type="checkbox" name="rotate" value="true">
             </label>
         </fieldset>
-        <button type="submit">Open ThePresenter!</button>
+        <button type="submit">Open The Presenter!</button>
     </form>
+
+    <section>
+        <h1>FAQ</h1>
+        <h2>What is <em>The Presenter</em></h2>
+        <p>
+            The Presenter is a small hobby-project that I made between making some
+            (actual) presentations. It can be used to transform simple
+            web-content, HTML or Markdown based, into a presentation.
+        </p>
+        <h2>Does it use AI?</h2>
+        <p>
+            Nope. It is rather simple and rule-based.
+        </p>
+        <h2>Will it work for my web page?</h2>
+        <ul>
+            <li>
+                If your content is made for/with/tested in Reveal or Impress, then yes, probably.
+            </li>
+            <li>
+                If your content is structured like most presentations:
+                A root-element containing multiple section-elements,
+                where each section is a slide, then yes, probably.
+                You might have to tune the selectors a bit.
+            </li>
+            <li>
+                For a random web page: Probably not.
+            </li>
+        </ul>
+
+        <h2>Does it require a server? Does it work offline?</h2>
+        <p>
+            There is no server involved (except the web server hosting the content,
+            and the webserver hosting this presenter tool). The presentation content
+            is downloaded directly in your browser, transformed, and presented.
+        </p>
+        <p>
+            It doesn't really work offline, but if
+            you load the presentation tool while online, you can then use it offline.
+            Until you close the tab 😁.
+        </p>
+
+        <h2>Ok, how must my HTML look? </h2>
+        <p>
+            First of all, we need to find the root element - the
+            element containing the actual slides. The queries used for that,
+            in order, is shown below. This can be overridden in the "Advanced" panel.
+        </p>
+        <pre><code>
+            const rootQuerySelectors = [
+                '#impress',
+                '.reveal > .slides',
+                '.presentation',
+                'article',
+                'main',
+                'body'
+            ]
+        </code></pre>
+
+        <h2>Bug reports, pull requests etc?</h2>
+        <p>
+            Sure, feel free to try that. I made this mostly for fun,
+            so I can't promise any quick responses.
+        </p>
+
+        <h2>Which frameworks or technologies does it use?</h2>
+        <p>
+            Just plain javascript, HTML and CSS. No frameworks.
+            Feel free to check out the source code!
+        </p>
+        <p>
+            <a href="https://github.com/narve/the-presenter">GitHub Repository</a>
+        </p>
+    </section>
 </main>
 
 </body>
