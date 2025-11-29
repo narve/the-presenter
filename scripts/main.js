@@ -1,16 +1,8 @@
-import {Console} from './console.js';
+import {Console, initializeKonsoleElement} from './console.js';
 import {initializeReveal} from "./reveal-narve.js";
 import {initializeImpress} from "./impress-narve.js";
 import {addLinkToHead} from "./util.js";
 
-export const rootQuerySelectors = [
-    '#impress',
-    '.reveal > .slides',
-    '.presentation',
-    'article',
-    'main',
-    'body'
-]
 
 const konsole = new Console()
 window.konsole = konsole
@@ -21,19 +13,17 @@ window.onload = async function () {
 
 
 async function main() {
+
     // Get configuration from URL parameters or defaults:
     const config = getConfig()
 
     // Show the console, unless disabled:
     if (!config.noConsole) {
-        const konsoleElement = document.createElement('output')
-        konsoleElement.classList.add('konsole')
-        document.body.appendChild(konsoleElement)
-        konsole.mount(konsoleElement)
+        initializeKonsoleElement(konsole)
     }
-    konsole.log("Welcome, meatbags! The Presenter is running!")
 
-    konsole.log("Incoming parameters: \n" + JSON.stringify(config, null, '  '))
+    konsole.log("Welcome, meatbags! The Presenter is running!")
+    konsole.log("Configuration: " + JSON.stringify(config, null, '  '))
 
     // Load the content into this document, if a URL is provided:
     if (config.url) {
@@ -70,6 +60,16 @@ async function main() {
 }
 
 function getConfig() {
+
+    const rootQuerySelectors = [
+        '#impress',
+        '.reveal > .slides',
+        '.presentation',
+        'article',
+        'main',
+        'body'
+    ]
+
     const searchParams = new URLSearchParams(window.location.search)
     // const config = {
     //     url: 'https://tangen-2it-utvikling.netlify.app/content/html-001',
@@ -187,7 +187,6 @@ async function loadContent(config) {
     }
 
 
-    // Part 3: Fix relative URLs for images, styles, scripts, etc.
     convertRelativeUrlsToAbsolute(presentationElement, config.url)
 
     konsole.log("Inserting presentation into current document")
@@ -196,6 +195,7 @@ async function loadContent(config) {
     })
 }
 
+/// Fix relative URLs for images, styles, scripts, etc.
 function convertRelativeUrlsToAbsolute(doc, url) {
     // for all images, fix the src attribute:
     const images = doc.querySelectorAll('img');

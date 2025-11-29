@@ -1,4 +1,4 @@
-#main-console, .konsole {
+output.konsole {
     position: absolute;
     top: 20px;
     left: 20px;
@@ -19,36 +19,37 @@
     overflow-y: auto;
 
     display: block;
-    /*width: 1000px;*/
-    /*min-width: 800px;*/
     margin: 2em auto;
     box-sizing: border-box;
 
     output {
         all: revert;
         display: block;
-        text-align: left!important;
+        text-align: left !important;
 
         &.error {
             color: #ff4c4c;
         }
     }
-}
 
-#main-console, .console {
+
     transition: opacity 5s ease;
-}
 
-#main-console.fade-out {
-    opacity: 0.0;
-}
+    &.fade-out {
+        opacity: 0.0;
+    }
 
-.loading-indicator {
-    animation: blink 1s infinite;
-    color: #666;
-}
+    .loading-indicator {
+        animation: blink 1s infinite;
+        color: #666;
+    }
 
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
+    @keyframes blink {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0;
+        }
+    }
 }

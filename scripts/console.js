@@ -1,3 +1,13 @@
+import {addLinkToHead} from "./util.js";
+
+export function initializeKonsoleElement(konsole = window.konsole) {
+    addLinkToHead('styles/konsole.css')
+    const konsoleElement = document.createElement('output')
+    konsoleElement.classList.add('konsole')
+    document.body.appendChild(konsoleElement)
+    konsole.mount(konsoleElement)
+}
+
 export class Console {
     #messages = [];
     #interval;
@@ -79,5 +89,4 @@ export class Console {
             }
         }
     }
-
 }
