@@ -98,7 +98,7 @@
             </label>
         </fieldset>
         <fieldset>
-            <legend>Advanced</legend>
+            <legend>Advanced (HTML)</legend>
             <label>
                 Root element selector:
                 <input type="text" size="80" name="rootSelector" value="">
@@ -106,6 +106,28 @@
                     The CSS selector used to find the root element
                     containing the slides. If empty, default selectors
                     will be used.
+                </p>
+            </label>
+            <label>
+                Slide element selector:
+                <input type="text" size="80" name="slideSelector" value="section">
+                <p>
+                    The CSS selector used to find the slide elements
+                    inside the root element. Default is "section".
+                </p>
+            </label>
+        </fieldset>
+        <fieldset>
+            <legend>Advanced (Markdown)</legend>
+            <label>
+                Slide separator (reg-exp)
+                <input type="text" size="80" name="markdownSlideSeparator" value="">
+                <p>
+                    The expression used to separate between different slides.
+                    Default is something like <code>(?:\r?\n\s*){3,}</code>
+                    (three consecutive white-space-only lines).
+                    Alternatively, use <code>^---$</code> to separate slides with a
+                    line containing only three dashes.
                 </p>
             </label>
             <label>

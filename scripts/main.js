@@ -2,6 +2,7 @@ import {Console} from './console.js';
 import {initializeReveal} from "./reveal-narve.js";
 import {initializeImpress} from "./impress-narve.js";
 import {addLinkToHead} from "./util.js";
+// import { marked } from 'https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js';
 
 export const rootQuerySelectors = [
     '#impress',
@@ -78,6 +79,10 @@ function getConfig() {
             : rootQuerySelectors.join(", "),
         slideSelector: searchParams.get('slideSelector') || 'section',
         console: konsole,
+        // three consecutive white-space-only newlines
+        markdownSlideSeparator: searchParams.get('markdownSlideSeparator')
+            // || /(?:\r?\n\s*){3,}/,
+            || /^---$`/,
     }
 }
 
@@ -113,22 +118,54 @@ async function loadContent(config) {
     konsole.debug("   Content type: " + responseType)
     konsole.debug("   Content length: " + responseText.length + " characters")
 
-    // Part 2: Parse the content into a DOM document
-    const domParser = new DOMParser()
-    const doc = domParser.parseFromString(responseText, 'text/html')
-    konsole.debug("Parsed fetched content into DOM document.")
-    const title =
-        doc.querySelector('head title')?.textContent ||
-        response.url.split('/').pop()
-    konsole.log('Presentation title: ' + title)
-    document.title = '[The Presenter]' + title
+    const isHtml = responseType.startsWith('text/html')
+    const isMarkdown = responseType.startsWith('text/markdown') || responseType.startsWith('application/markdown')
+
+    let presentationElement;
+    if (isHtml) {
+
+        // Part 2: Parse the content into a DOM document
+        const domParser = new DOMParser()
+        presentationElement = domParser.parseFromString(responseText, 'text/html')
+        konsole.debug("Parsed fetched content into DOM document.")
+        const title =
+            presentationElement.querySelector('head title')?.textContent ||
+            response.url.split('/').pop()
+        konsole.log('Presentation title: ' + title)
+        document.title = '[The Presenter]' + title
+    } else if (isMarkdown) {
+
+        konsole.log("Markdown content detected - converting to HTML")
+
+        // Split on three consecutive whitespace-only lines
+        const separatorPattern = new RegExp(config.markdownSlideSeparator, 'm');
+        const slides = responseText.split(separatorPattern);
+        konsole.debug(`Split markdown into ${slides.length} slides using separator ${config.markdownSlideSeparator}`)
+
+        // Dynamic import - only loads when markdown is detected
+        const {marked} = await import('https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js');
+
+        presentationElement = document.createElement('article');
+
+        // Convert markdown to HTML using marked.js
+        for (let slide of slides) {
+            const htmlContent = marked.parse(slide)
+            const section = document.createElement('section')
+            section.innerHTML = htmlContent
+            presentationElement.appendChild(section)
+        }
+
+        konsole.debug("Converted markdown to HTML.")
+    } else {
+        throw new Error(`Unsupported content type: ${responseType}`)
+    }
 
 
     // Part 3: Fix relative URLs for images, styles, scripts, etc.
-    convertRelativeUrlsToAbsolute(doc, config.url, konsole)
+    convertRelativeUrlsToAbsolute(presentationElement, config.url, konsole)
 
     konsole.log("Inserting presentation into current document")
-    Array.from(doc.body.children).forEach(child => {
+    Array.from(presentationElement.children).forEach(child => {
         document.body.appendChild(document.importNode(child, true))
     })
 }
