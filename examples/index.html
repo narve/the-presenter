@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+
+    <title>The Presenter! 🎬</title>
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+
+    <style>
+        body {
+            display: flex;
+        }
+
+        main {
+            max-width: 40em;
+            margin: auto auto;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 1em;
+            /*min-width: 100em;*/
+
+            input[type="text"] {
+                display: block;
+            }
+
+            p {
+                font-size: small;
+                font-weight: bold;
+                margin: 0.5em 0 0 1em;
+
+                &::before {
+                    content: "ℹ️ ";
+                }
+            }
+        }
+
+
+        form {
+            /*border: 2px solid black;*/
+            /*min-width: 120em;*/
+            /*width: 120em;*/
+        }
+    </style>
+
+    <script>
+
+        function fixContentLinks() {
+            const contentLinks = document.querySelectorAll('a');
+            contentLinks.forEach(link => {
+                const originalHref = link.getAttribute('href');
+                const basicUrl = originalHref.split(/\?/)[0];
+                let newHref = `../presenter.html?url=${encodeURIComponent(basicUrl)}`;
+                if (originalHref.match(/\?/)) {
+                    // Preserve existing query parameters
+                    newHref += "&" + originalHref.split(/\?/)[1];
+                }
+                link.setAttribute('href', newHref);
+
+                console.log(`Fixed link: ${originalHref} -> ${newHref}`)
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fixContentLinks();
+        });
+    </script>
+</head>
+<body>
+
+<main>
+    <h1>The Presenter - Examples!</h1>
+
+    <h2>Markdown-examples</h2>
+    <ul>
+        <li>
+            <a href="https://narve.github.io/presentations/baas-supabase.md">Backend-as-a-service</a>
+        </li>
+        <li>
+            <a href="https://narve.github.io/presentations/effects.md">Effects</a>
+        </li>
+        <li>
+            <a href="https://narve.github.io/presentations/graphql-vs-the-rest.md">GraphQL</a>
+        </li>
+    </ul>
+
+    <h2>HTML Examples</h2>
+    <ul>
+        <li>
+            <a href="examples/basic.html">Basic example</a>
+        </li>
+        <li>
+            <a href="examples/tricky.html?rootSelector=.stupid-wrapper&slideSelector=.stupid-wrapper article>div">Tricky example</a>
+        </li>
+        <!--        <li>-->
+        <!--            <a href="https://revealjs.com/?demo">The official Reveal Demo, run through The Presenter</a>-->
+        <!--        </li>-->
+    </ul>
+</main>
+
+</body>
+</html>

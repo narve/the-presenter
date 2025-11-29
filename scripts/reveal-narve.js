@@ -28,34 +28,24 @@ export function initializeReveal(config) {
 
     // Fix document structure if needed:
     if (!document.querySelector('.reveal')) {
-        konsole.log('Wrapping slides in .reveal > .slides')
+        konsole.debug('Wrapping slides in .reveal > .slides')
 
         const slides = [...root.querySelectorAll(config.slideSelector)]
-        konsole.debug(`Reveal: Found ${slides.length} slides using selector '${config.slideSelector}'`)
+        konsole.log(`Reveal: Found ${slides.length} slides using selector '${config.slideSelector}'`)
 
-        const slideDiv = document.createElement('div');
-        slideDiv.classList.add('slides');
-        slides.forEach(elem => slideDiv.appendChild(elem))
+        const slideHolder = document.createElement('div');
+        slideHolder.classList.add('slides');
+        slides.forEach(elem => {
+            const section = document.createElement('section');
+            section.appendChild(elem);
+            slideHolder.appendChild(section);
+        })
 
         const reveal = document.createElement('div');
         reveal.classList.add('reveal');
-        reveal.appendChild(slideDiv);
+        reveal.appendChild(slideHolder);
         document.body.appendChild(reveal);
     }
-
-    // PlantUml:
-    // document.querySelectorAll('.reveal code.language-plantuml').forEach(function (block) {
-    //     let img = document.createElement("img");
-    //     img.setAttribute("src", '//www.plantuml.com/plantuml/svg/' + plantumlEncoder.encode(block.innerText));
-    //     img.classList.add('plantuml');
-    //     const scale = block.getAttribute('data-scale');
-    //     if (scale) {
-    //         img.style.scale = scale;
-    //     }
-    //     const pre = block.parentElement;
-    //     pre.parentNode.replaceChild(img, pre);
-    // });
-
 
     document.querySelectorAll("pre code:not(.data-no-trim)")
         .forEach((block) => {
@@ -65,10 +55,7 @@ export function initializeReveal(config) {
 
     // Add copy button to code-blocks:
     const copyButtonLabel = "📋";
-
-    // use a class selector if available
     let blocks = document.querySelectorAll("pre:not(.mermaid):not(.no-copy)");
-
     blocks.forEach((block) => {
         // only add button if browser supports Clipboard API
         if (navigator.clipboard) {
