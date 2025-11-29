@@ -73,20 +73,35 @@ function getConfig() {
         mode: searchParams.get('mode') || 'reveal',
         shuffle: searchParams.get('shuffle') === 'true',
         rotate: searchParams.get('rotate') === 'true',
-        rootQuerySelectors: searchParams.get('rootQuerySelector') || rootQuerySelectors,
+        rootSelector: searchParams.get('rootSelector')
+            ? searchParams.get('rootSelector')
+            : rootQuerySelectors.join(", "),
+        slideSelector: searchParams.get('slideSelector') || 'section',
         console: konsole,
     }
 }
 
 async function loadContent(config) {
-    // Part 1: Fetch the content!
 
-    // Use CORS proxy to avoid browser CORS errors
-    const proxyUrl = 'https://corsproxy.io/?'
-    const url = config.url.match(/http(s)?:\/\/localhost/)
-        ? config.url
-        : proxyUrl + encodeURIComponent(config.url)
+    // Part 1: Fetch the content!
     konsole.log("Fetching the presentation from " + config.url);
+
+    const proxyUrl = 'https://corsproxy.io/?'
+
+    let url = config.url
+
+    // If the url is non-absolute, make it absolute based on current location
+    if (!config.url.match(/^http(s)?:\/\//)) {
+        const baseUrl = window.location.origin + window.location.pathname
+        url = new URL(config.url, baseUrl).href
+        konsole.debug("Converted non-absolute URL to absolute: " + config.url + " -> " + url)
+    }
+
+    // If the URL is localhost, do not use the proxy
+    // Otherwise, use CORS proxy to avoid browser CORS errors
+    url = url.match(/http(s)?:\/\/localhost/)
+        ? url
+        : proxyUrl + encodeURIComponent(url)
     konsole.debug("Actual url: " + url);
     const response = await fetch(url)
     if (!response.ok)

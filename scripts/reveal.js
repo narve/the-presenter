@@ -9,24 +9,28 @@ export function initializeReveal(config) {
     const konsole = config.console
     konsole.log('RevealHighlight: ', RevealHighlight)
     konsole.log('Mermaid: ', RevealMermaidModule)
+    konsole.log('RootSelector: ' + config.rootSelector)
 
     const RevealMermaid = RevealMermaidModule.default()
 
-    const root = config.rootQuerySelectors
-        .map(selector => document.querySelector(selector))
-        .find(element => element !== null)
+    const root = document.querySelector(config.rootSelector)
+
+    konsole.debug('Reveal root element: ' + root.tagName + "." + root.className)
 
     // Fix document structure if needed:
     if (!document.querySelector('.reveal')) {
         konsole.log('Wrapping slides in .reveal > .slides')
-        const slides = document.createElement('div');
-        slides.classList.add('slides');
-        while (root.firstChild) {
-            slides.appendChild(root.firstChild);
-        }
+
+        const slides = [...root.querySelectorAll(config.slideSelector)]
+        konsole.debug(`Reveal: Found ${slides.length} slides using selector '${config.slideSelector}'`)
+
+        const slideDiv = document.createElement('div');
+        slideDiv.classList.add('slides');
+        slides.forEach(elem => slideDiv.appendChild(elem))
+
         const reveal = document.createElement('div');
         reveal.classList.add('reveal');
-        reveal.appendChild(slides);
+        reveal.appendChild(slideDiv);
         document.body.appendChild(reveal);
     }
 
@@ -47,15 +51,15 @@ export function initializeReveal(config) {
 
     // Remove tasks:
     // const shouldShowTasks = document.cookie.indexOf('showtasks') >= 0 || document.location.search.includes('show-tasks')
-    const shouldShowTasks = localStorage.getItem('showtasks') === 'true'
-    if (!shouldShowTasks) {
-        konsole.log('Removing task sections')
-        for (const e of document.querySelectorAll(".task")) {
-            e.remove();
-        }
-    } else {
-        konsole.log('Keeping task sections')
-    }
+    // const shouldShowTasks = localStorage.getItem('showtasks') === 'true'
+    // if (!shouldShowTasks) {
+    //     konsole.log('Removing task sections')
+    //     for (const e of document.querySelectorAll(".task")) {
+    //         e.remove();
+    //     }
+    // } else {
+    //     konsole.log('Keeping task sections')
+    // }
 
     document.querySelectorAll("pre code:not(.data-no-trim)")
         .forEach((block) => {

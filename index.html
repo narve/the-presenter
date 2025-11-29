@@ -56,11 +56,16 @@
     <form method="get" action="presenter.html">
         <fieldset>
             <label>
-                Content URL:
+                Content URL (double-click or arrow down to see suggestions):
                 <input type="text" size="80" name="url"
-                       data-value="https://tangen-2it-utvikling.netlify.app/content/html-001"
-                       value="http://localhost:63342/the-presenter/examples/basic.html"
+                       list="url-suggestions"
+                       value="https://narve.github.io/cp-sat-presentation/"
                 >
+                <datalist id="url-suggestions">
+                    <option value="https://narve.github.io/cp-sat-presentation/">
+                    <option value="https://tangen-2it-utvikling.netlify.app/content/html-001">
+                    <option value="examples/basic.html">
+                </datalist>
             </label>
             <label>
                 Mode:
@@ -77,16 +82,39 @@
                     Shuffle Slides (if supported).
                     <input type="checkbox" name="shuffle" value="true">
                     <p>
-                        This does not shuffle
+                        For Impress: This does not shuffle
                         the order of the slides, but the positioning.
                         This means a lot more moving around when presenting,
                         for good or bad 😄
+                    </p>
+                    <p>
+                        For Reveal: This will randomize the order of slides.
                     </p>
                 </label>
             </div>
             <label>
                 Add some rotation funkiness (if supported).
                 <input type="checkbox" name="rotate" value="true">
+            </label>
+        </fieldset>
+        <fieldset>
+            <legend>Advanced</legend>
+            <label>
+                Root element selector:
+                <input type="text" size="80" name="rootSelector" value="">
+                <p>
+                    The CSS selector used to find the root element
+                    containing the slides. If empty, default selectors
+                    will be used.
+                </p>
+            </label>
+            <label>
+                Slide element selector:
+                <input type="text" size="80" name="slideSelector" value="section">
+                <p>
+                    The CSS selector used to find the slide elements
+                    inside the root element. Default is "section".
+                </p>
             </label>
         </fieldset>
         <button type="submit">Open The Presenter!</button>
