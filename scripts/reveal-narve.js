@@ -1,9 +1,16 @@
+// noinspection JSFileReferences
+
 import Reveal from "https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.esm.js"
 import RevealHighlight from "https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/highlight/highlight.esm.js"
 import * as RevealMermaidModule
     from "https://cdn.jsdelivr.net/npm/reveal.js-mermaid-plugin/plugin/mermaid/mermaid.esm.js"
 
-import plantumlEncoder from 'https://cdn.jsdelivr.net/npm/plantuml-encoder@1.4.0/+esm'
+import RevealMath from "https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/math/math.esm.js";
+import * as RevealMarkdownModule
+    from "https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/markdown/markdown.esm.js"
+
+
+// import plantumlEncoder from 'https://cdn.jsdelivr.net/npm/plantuml-encoder@1.4.0/+esm'
 
 export function initializeReveal(config) {
     const konsole = config.console
@@ -12,6 +19,8 @@ export function initializeReveal(config) {
     konsole.log('RootSelector: ' + config.rootSelector)
 
     const RevealMermaid = RevealMermaidModule.default()
+    const RevealMarkdown = RevealMarkdownModule.default()
+
 
     const root = document.querySelector(config.rootSelector)
 
@@ -35,58 +44,27 @@ export function initializeReveal(config) {
     }
 
     // PlantUml:
-    document.querySelectorAll('.reveal code.language-plantuml').forEach(function (block) {
-        let img = document.createElement("img");
-        img.setAttribute("src", '//www.plantuml.com/plantuml/svg/' + plantumlEncoder.encode(block.innerText));
-        img.classList.add('plantuml');
-        const scale = block.getAttribute('data-scale');
-        if (scale) {
-            img.style.scale = scale;
-        }
-        const pre = block.parentElement;
-        pre.parentNode.replaceChild(img, pre);
-    });
-
-    // document.cookie = "showtasks=true"
-
-    // Remove tasks:
-    // const shouldShowTasks = document.cookie.indexOf('showtasks') >= 0 || document.location.search.includes('show-tasks')
-    // const shouldShowTasks = localStorage.getItem('showtasks') === 'true'
-    // if (!shouldShowTasks) {
-    //     konsole.log('Removing task sections')
-    //     for (const e of document.querySelectorAll(".task")) {
-    //         e.remove();
+    // document.querySelectorAll('.reveal code.language-plantuml').forEach(function (block) {
+    //     let img = document.createElement("img");
+    //     img.setAttribute("src", '//www.plantuml.com/plantuml/svg/' + plantumlEncoder.encode(block.innerText));
+    //     img.classList.add('plantuml');
+    //     const scale = block.getAttribute('data-scale');
+    //     if (scale) {
+    //         img.style.scale = scale;
     //     }
-    // } else {
-    //     konsole.log('Keeping task sections')
-    // }
+    //     const pre = block.parentElement;
+    //     pre.parentNode.replaceChild(img, pre);
+    // });
+
 
     document.querySelectorAll("pre code:not(.data-no-trim)")
         .forEach((block) => {
-            block.setAttribute('data-trim', true)
+            block.setAttribute('data-trim', "true")
         })
-    //
-    // // If on local-host, on first page, add a button to toggle task-showing:
-    //
-    // if (document.location.hostname === 'localhost') {
-    //     const button = document.createElement('button');
-    //     button.classList.add('toggle-tasks');
-    //     button.innerText = shouldShowTasks ? 'Skjul oppgaver' : 'Vis oppgaver';
-    //     button.onclick = () => {
-    //         konsole.log('Toggling tasks', 'old=', shouldShowTasks);
-    //         localStorage.setItem('showtasks', shouldShowTasks ? 'false' : 'true');
-    //         document.cookie = shouldShowTasks
-    //             ? 'showtasks=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/'
-    //             : 'showtasks=true; expires=Thu, 01 Jan 2099 00:00:00 UTC; path=*';
-    //         document.location.reload();
-    //     }
-    //     const firstSection = document.querySelector('section');
-    //     firstSection.appendChild(button);
-    // }
 
 
     // Add copy button to code-blocks:
-    const copyButtonLabel = "Kopier";
+    const copyButtonLabel = "📋";
 
     // use a class selector if available
     let blocks = document.querySelectorAll("pre:not(.mermaid):not(.no-copy)");
@@ -130,7 +108,7 @@ export function initializeReveal(config) {
         .forEach(a => {
             // return
             a.target = '_blank';
-            a.rel = 'noopener';
+            a.rel = 'nnoopener';
             a.innerText = a.href;
         })
 
@@ -139,6 +117,8 @@ export function initializeReveal(config) {
             plugins: [
                 RevealHighlight,
                 RevealMermaid,
+                RevealMarkdown,
+                RevealMath.KaTeX,
                 // PlantUml,
                 // { src: '//cdn.jsdelivr.net/npm/reveal-plantuml' },
             ],

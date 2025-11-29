@@ -1,5 +1,5 @@
 import {Console} from './console.js';
-import {initializeReveal} from "./reveal.js";
+import {initializeReveal} from "./reveal-narve.js";
 import {initializeImpress} from "./impress-narve.js";
 import {addLinkToHead} from "./util.js";
 
