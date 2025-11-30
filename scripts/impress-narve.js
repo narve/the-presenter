@@ -1,10 +1,13 @@
+// noinspection JSUrlImportUsage
+
 import 'https://cdn.jsdelivr.net/gh/impress/impress.js@2.0.0/js/impress.js'
 import {addLinkToHead} from "./util.js";
 
-
-export function initializeImpress(config) {
+export async function initializeImpress(config) {
+    const konsole = config.console
 
     // Let's locate the root element for impress.js:
+    await import('https://cdn.jsdelivr.net/gh/impress/impress.js@2.0.0/js/impress.js')
 
     const root = document.getElementById('impress')
         || document.querySelector('body > .reveal > .slides')

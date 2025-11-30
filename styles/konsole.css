@@ -30,6 +30,12 @@ output.konsole {
         &.error {
             color: #ff4c4c;
         }
+
+        &.warning {
+            /* Make it italic and bold: */
+            font-style: italic;
+            font-weight: bold;
+        }
     }
 
 

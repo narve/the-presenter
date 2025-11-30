@@ -1,25 +1,23 @@
 // noinspection JSFileReferences
 
-import Reveal from "https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.esm.js"
-import RevealHighlight from "https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/highlight/highlight.esm.js"
-import * as RevealMermaidModule
-    from "https://cdn.jsdelivr.net/npm/reveal.js-mermaid-plugin/plugin/mermaid/mermaid.esm.js"
+export async function initializeReveal(config) {
 
-import RevealMath from "https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/math/math.esm.js";
-import * as RevealMarkdownModule
-    from "https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/markdown/markdown.esm.js"
-
-
-// import plantumlEncoder from 'https://cdn.jsdelivr.net/npm/plantuml-encoder@1.4.0/+esm'
-
-export function initializeReveal(config) {
     const konsole = config.console
-    konsole.log('RevealHighlight: ', RevealHighlight)
-    konsole.log('Mermaid: ', RevealMermaidModule)
-    konsole.log('RootSelector: ' + config.rootSelector)
+    konsole.log('Loading reveal presentation framework...')
+
+    const {default: Reveal} = await import("https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.esm.js")
+    const {default: RevealHighlight} = await import("https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/highlight/highlight.esm.js")
+    const RevealMermaidModule = await import("https://cdn.jsdelivr.net/npm/reveal.js-mermaid-plugin/plugin/mermaid/mermaid.esm.js")
+    const {default: RevealMath} = await import("https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/math/math.esm.js")
+    const RevealMarkdownModule = await import("https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/markdown/markdown.esm.js")
+    // import plantumlEncoder from 'https://cdn.jsdelivr.net/npm/plantuml-encoder@1.4.0/+esm'
 
     const RevealMermaid = RevealMermaidModule.default()
     const RevealMarkdown = RevealMarkdownModule.default()
+
+    konsole.debug('RevealHighlight: ', RevealHighlight)
+    konsole.debug('Mermaid: ', RevealMermaidModule)
+    konsole.debug('RootSelector: ' + config.rootSelector)
 
 
     const root = document.querySelector(config.rootSelector)
@@ -30,8 +28,9 @@ export function initializeReveal(config) {
     if (!document.querySelector('.reveal')) {
         konsole.debug('Wrapping slides in .reveal > .slides')
 
-        const slides = [...root.querySelectorAll(config.slideSelector)]
-        konsole.log(`Reveal: Found ${slides.length} slides using selector '${config.slideSelector}'`)
+        const slideSelector = 'section'
+        const slides = [...root.querySelectorAll(slideSelector)]
+        konsole.log(`Reveal: Found ${slides.length} slides using selector '${slideSelector}'`)
 
         const slideHolder = document.createElement('div');
         slideHolder.classList.add('slides');

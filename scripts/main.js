@@ -1,10 +1,12 @@
-import {Console, initializeKonsoleElement} from './console.js';
+// noinspection JSFileReferences
+
+import {Konsole, initializeKonsoleElement} from './konsole.js';
 import {initializeReveal} from "./reveal-narve.js";
 import {initializeImpress} from "./impress-narve.js";
-import {addLinkToHead} from "./util.js";
+import {addLinkToHead, convertRelativeUrlsToAbsolute} from "./util.js";
 
 
-const konsole = new Console()
+const konsole = new Konsole()
 window.konsole = konsole
 
 window.onload = async function () {
@@ -28,7 +30,17 @@ async function main() {
     // Load the content into this document, if a URL is provided:
     if (config.url) {
         try {
-            await loadContent(config)
+            const article = await loadContent(config)
+            if (document.querySelector('body>main')) {
+                konsole.log("Inserting presentation into existing <main> element")
+                document.querySelector('body>main').appendChild(article)
+            } else {
+                // Create a main element to hold the presentation:
+                konsole.log("Creating <main> element to hold presentation")
+                const main = document.createElement('main')
+                main.appendChild(article)
+                document.body.appendChild(main)
+            }
         } catch (error) {
             console.error(error)
             konsole.error("Error fetching presentation content: " + error)
@@ -36,18 +48,17 @@ async function main() {
         }
     } else {
         konsole.log("No presentation URL provided - assuming content is already in document.")
-        throw new Error('No presentation URL provided - this mode is not implemented yet.')
+        konsole.warn('NB: Normalization not implemented yet for local content.')
     }
 
     konsole.log(`Preparing to initialize presentation framework '${config.mode}'`)
     try {
         if (config.mode === 'impress') {
-            initializeImpress(config)
+            await initializeImpress(config)
         } else {
-            // Add a style-element, pointing to reveal.css, after the fetch:
-            addLinkToHead('styles/custom-reveal.css')
-            konsole.log("Added reveal.css stylesheet to document")
-            initializeReveal(config)
+            addLinkToHead('/the-presenter/styles/custom-reveal.css')
+            konsole.debug("Added reveal.css stylesheet to document")
+            await initializeReveal(config)
             konsole.log("Reveal initialized")
         }
     } catch (error) {
@@ -56,7 +67,7 @@ async function main() {
         return
     }
     konsole.log('All done! Enjoy the presentation!')
-    konsole.done()
+    // konsole.done()
 }
 
 function getConfig() {
@@ -130,6 +141,17 @@ async function fetchPresentationContent(config) {
     }
 }
 
+/**
+ * Loads presentation content from a remote URL and inserts it into the current document.
+ * Supports both HTML and Markdown content types.
+ *
+ * @param {Object} config - Configuration object containing presentation settings
+ * @param {string} config.url - URL of the presentation content to load
+ * @param {string} config.slideSelector - CSS selector for identifying slides in HTML content
+ * @param {RegExp|string} config.markdownSlideSeparator - Pattern to split markdown into slides
+ * @returns {Promise<HTMLElement>} - An article element containing the loaded presentation slides
+ * @throws {Error} If content type is unsupported or if fetching fails
+ */
 async function loadContent(config) {
 
     const {responseText, responseType} = await fetchPresentationContent(config)
@@ -137,48 +159,42 @@ async function loadContent(config) {
     const isHtml = responseType.startsWith('text/html')
     const isMarkdown = responseType.startsWith('text/markdown') || responseType.startsWith('application/markdown')
 
-    let presentationElement;
+    let title = 'Presentation!'
+    // let presentationElement;
+    let slides;
     if (isHtml) {
 
         // Parse the content into a DOM document
         const domParser = new DOMParser()
         let contentDom = domParser.parseFromString(responseText, 'text/html')
         konsole.debug("Parsed fetched content into DOM document.")
-        const title =
-            contentDom.querySelector('head title')?.textContent ||
-            config.url.split('/').pop()
-        konsole.log('Presentation title: ' + title)
-        document.title = '[The Presenter]' + title
-
-        presentationElement = contentDom
-
-        // presentationElement = document.createElement('article');
-        // const slides = contentDom.querySelectorAll(config.slideSelector)
-        // konsole.log(`HTML content detected - found ${slides.length} slides using selector '${config.slideSelector}'`)
-        // slides.forEach(elem => {
-        //     const section = document.createElement('section');
-        //     section.appendChild(elem);
-        //     presentationElement.appendChild(section);
-        // })
-
+        title =
+            contentDom.querySelector('head title')?.textContent
+            || config.url.split('/').pop()
+        slides = contentDom.querySelectorAll(config.slideSelector)
+        konsole.log(`Fetched HTML presentation: "${title}", ${slides.length} slides. `)
     } else if (isMarkdown) {
 
         konsole.log("Markdown content detected - converting to HTML")
 
+        title = config.url.split('/').pop()
+
         // Split on three consecutive whitespace-only lines
         const separatorPattern = new RegExp(config.markdownSlideSeparator, 'm');
-        const slides = responseText.split(separatorPattern);
-        konsole.debug(`Split markdown into ${slides.length} slides using separator ${config.markdownSlideSeparator}`)
+        const slidesMarkdown = responseText.split(separatorPattern);
+        konsole.debug(`Split markdown into ${slidesMarkdown.length} slides using separator ${config.markdownSlideSeparator}`)
 
-        presentationElement = document.createElement('article');
+        // presentationElement = document.createElement('article');
         const {marked} = await import('https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js');
 
+        slides = []
         // Convert each slide to a section and append it:
-        for (let slide of slides) {
+        for (let slide of slidesMarkdown) {
             const htmlContent = marked.parse(slide)
             const section = document.createElement('section')
             section.innerHTML = htmlContent
-            presentationElement.appendChild(section)
+            // presentationElement.appendChild(section)
+            slides.push(section)
         }
 
         konsole.debug("Converted markdown to HTML.")
@@ -186,26 +202,15 @@ async function loadContent(config) {
         throw new Error(`Unsupported content type: ${responseType}`)
     }
 
+    document.title = '[The Presenter]' + title
 
-    convertRelativeUrlsToAbsolute(presentationElement, config.url)
+    const article = document.createElement('article');
+    article.classList.add('presentation')
+    slides.forEach(elem => article.appendChild(elem))
+
+    convertRelativeUrlsToAbsolute(article, config.url)
 
     konsole.log("Inserting presentation into current document")
-    Array.from(presentationElement.children).forEach(child => {
-        document.body.appendChild(document.importNode(child, true))
-    })
+    return article
 }
 
-/// Fix relative URLs for images, styles, scripts, etc.
-function convertRelativeUrlsToAbsolute(doc, url) {
-    // for all images, fix the src attribute:
-    const images = doc.querySelectorAll('img');
-    images.forEach(img => {
-        const originalSrc = img.getAttribute('src');
-        const resolvedSrc = new URL(originalSrc, url).href;
-        img.setAttribute('src', resolvedSrc);
-        konsole.debug(`Fixed image src: ${originalSrc} -> ${resolvedSrc}`);
-    });
-    if (images.length > 0)
-        konsole.log(`Fixed ${images.length} image urls`)
-
-}

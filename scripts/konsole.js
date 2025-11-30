@@ -1,14 +1,14 @@
 import {addLinkToHead} from "./util.js";
 
 export function initializeKonsoleElement(konsole = window.konsole) {
-    addLinkToHead('styles/konsole.css')
+    addLinkToHead('/the-presenter/styles/konsole.css')
     const konsoleElement = document.createElement('output')
     konsoleElement.classList.add('konsole')
     document.body.appendChild(konsoleElement)
     konsole.mount(konsoleElement)
 }
 
-export class Console {
+export class Konsole {
     #messages = [];
     #interval;
     #element;
@@ -22,6 +22,10 @@ export class Console {
 
     log(message) {
         this.#messages.push({type: 'info', message})
+    }
+
+    warn(message) {
+        this.#messages.push({type: 'warning', message})
     }
 
     error(message) {
@@ -54,8 +58,8 @@ export class Console {
     // This method is called every 10ms
     tick() {
         this.#counter++
-        const wordFactor = this.#isClosing || this.#line.length > 5 ? 5 : 10
-        const lineFactor = this.#isClosing || this.#messages.length > 3 ? 10 : 25
+        const wordFactor = this.#isClosing || this.#line.length > 5 ? 1 : 10
+        const lineFactor = this.#isClosing || this.#messages.length > 3 ? 1 : 25
         if (this.#counter % wordFactor === 0 && this.#line.length > 0) {
             const nextWord = this.#line.shift()
             this.#currentLineElement.textContent += ' ' + nextWord
@@ -85,7 +89,7 @@ export class Console {
                 this.#indicator.remove()
                 this.#element.classList.add('fade-out')
                 // This duration should be at least as long the CSS animation duration:
-                setTimeout(() => this.unmount(), 5000)
+                setTimeout(() => this.unmount(), 10000)
             }
         }
     }
