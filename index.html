@@ -52,6 +52,7 @@
     <p>This is a tool to present web-based content in presentation mode.</p>
     <p>Enter the URL of the content you want to present, and select the presentation mode/framework.</p>
     <p>Currently, Reveal.JS, Impress and Shower is supported.</p>
+    <p>Questions? <a href="#faq">FAQ</a></p>
 
     <form method="get" action="presenter.html">
         <fieldset>
@@ -136,53 +137,79 @@
         <button type="submit">Open The Presenter!</button>
     </form>
 
-    <section>
-        <h1>FAQ</h1>
-        <h2>What is <em>The Presenter</em></h2>
-        <p>
-            The Presenter is a small hobby-project that I made between making some
-            (actual) presentations. It can be used to transform simple
-            web-content, HTML or Markdown based, into a presentation.
-        </p>
-        <h2>Does it use AI?</h2>
-        <p>
-            Nope. It is rather simple and rule-based.
-        </p>
-        <h2>Will it work for my web page?</h2>
-        <ul>
-            <li>
-                If your content is made for/with/tested in Reveal or Impress, then yes, probably.
-            </li>
-            <li>
-                If your content is structured like most presentations:
-                A root-element containing multiple section-elements,
-                where each section is a slide, then yes, probably.
-                You might have to tune the selectors a bit.
-            </li>
-            <li>
-                For a random web page: Probably not.
-            </li>
-        </ul>
+    <article id="faq">
+        <header>
+            <h1>FAQ</h1>
+        </header>
 
-        <h2>Does it require a server? Does it work offline?</h2>
-        <p>
-            There is no server involved (except the web server hosting the content,
-            and the webserver hosting this presenter tool). The presentation content
-            is downloaded directly in your browser, transformed, and presented.
-        </p>
-        <p>
-            It doesn't really work offline, but if
-            you load the presentation tool while online, you can then use it offline.
-            Until you close the tab 😁.
-        </p>
+        <section>
+            <h2>What is <em>The Presenter</em></h2>
+            <p>
+                The Presenter is a small hobby-project that I made between making some
+                (actual) presentations. It can be used to transform simple
+                web-content, HTML or Markdown based, into a presentation.
+            </p>
+        </section>
 
-        <h2>Ok, how must my HTML look? </h2>
-        <p>
-            First of all, we need to find the root element - the
-            element containing the actual slides. The queries used for that,
-            in order, is shown below. This can be overridden in the "Advanced" panel.
-        </p>
-        <pre><code>
+        <section>
+            <h2>How do I use this? </h2>
+            <p>
+                If you are currently authoring an HTML-presentation, just insert this link
+                in the head of the document, including the <code>type=module</code> attribute:
+            </p>
+            <pre><code>
+            &lt;script type="module" src="https://narve.github.io/the-presenter/scripts/main.js"&gt;&lt;/script&gt;
+        </code></pre>
+        </section>
+
+        <section>
+            <h2>Does it use AI?</h2>
+            <p>
+                Nope. It is rather simple and rule-based.
+            </p>
+
+        </section>
+
+        <section>
+            <h2>Will it work for my web page?</h2>
+            <ul>
+                <li>
+                    If your content is made for/with/tested in Reveal or Impress, then yes, probably.
+                </li>
+                <li>
+                    If your content is structured like most presentations:
+                    A root-element containing multiple section-elements,
+                    where each section is a slide, then yes, probably.
+                    You might have to tune the selectors a bit.
+                </li>
+                <li>
+                    For a random web page: Probably not.
+                </li>
+            </ul>
+
+        </section>
+        <section>
+            <h2>Does it require a server? Does it work offline?</h2>
+            <p>
+                There is no server involved (except the web server hosting the content,
+                and the webserver hosting this presenter tool). The presentation content
+                is downloaded directly in your browser, transformed, and presented.
+            </p>
+            <p>
+                It doesn't really work offline, but if
+                you load the presentation tool while online, you can then use it offline.
+                Until you close the tab 😁.
+            </p>
+        </section>
+
+        <section>
+            <h2>Ok, how must my HTML look? </h2>
+            <p>
+                First of all, we need to find the root element - the
+                element containing the actual slides. The queries used for that,
+                in order, is shown below. This can be overridden in the "Advanced" panel.
+            </p>
+            <pre><code>
             const rootQuerySelectors = [
                 '#impress',
                 '.reveal > .slides',
@@ -192,12 +219,15 @@
                 'body'
             ]
         </code></pre>
+        </section>
 
-        <h2>Bug reports, pull requests etc?</h2>
-        <p>
-            Sure, feel free to try that. I made this mostly for fun,
-            so I can't promise any quick responses.
-        </p>
+        <section>
+            <h2>Bug reports, pull requests etc?</h2>
+            <p>
+                Sure, feel free to try that. I made this mostly for fun,
+                so I can't promise any quick responses.
+            </p>
+        </section>
 
         <h2>Which frameworks or technologies does it use?</h2>
         <p>
@@ -207,7 +237,7 @@
         <p>
             <a href="https://github.com/narve/the-presenter">GitHub Repository</a>
         </p>
-    </section>
+    </article>
 </main>
 
 </body>
