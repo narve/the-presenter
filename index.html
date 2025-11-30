@@ -50,8 +50,8 @@
 <main>
     <h1>The Presenter!</h1>
     <p>This is a tool to present web-based content in presentation mode.</p>
-    <p>Enter the URL of the content you want to present, and select the presentation mode.</p>
-    <p>Currently, only Reveal.JS and Impress mode is supported.</p>
+    <p>Enter the URL of the content you want to present, and select the presentation mode/framework.</p>
+    <p>Currently, Reveal.JS, Impress and Shower is supported.</p>
 
     <form method="get" action="presenter.html">
         <fieldset>
@@ -65,6 +65,7 @@
                     <option value="https://narve.github.io/cp-sat-presentation/">
                     <option value="https://tangen-2it-utvikling.netlify.app/content/html-001">
                     <option value="examples/basic.html">
+                    <option value="https://narve.github.io/presentations/baas-supabase.md">
                 </datalist>
             </label>
             <label>
@@ -72,6 +73,7 @@
                 <select name="mode">
                     <option value="reveal">Reveal.JS</option>
                     <option value="impress">Impress</option>
+                    <option value="shower">Shower</option>
                 </select>
             </label>
         </fieldset>

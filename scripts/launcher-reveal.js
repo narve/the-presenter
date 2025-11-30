@@ -3,7 +3,7 @@
 export async function initializeReveal(config) {
 
     const konsole = config.console
-    konsole.log('Loading reveal presentation framework...')
+    konsole.log('Loading Reveal presentation framework...')
 
     const {default: Reveal} = await import("https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.esm.js")
     const {default: RevealHighlight} = await import("https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/highlight/highlight.esm.js")

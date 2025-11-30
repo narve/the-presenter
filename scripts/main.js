@@ -1,8 +1,9 @@
 // noinspection JSFileReferences
 
 import {Konsole, initializeKonsoleElement} from './konsole.js';
-import {initializeReveal} from "./reveal-narve.js";
-import {initializeImpress} from "./impress-narve.js";
+import {initializeReveal} from "./launcher-reveal.js";
+import {initializeImpress} from "./launcher-impress.js";
+import {initializeShower} from "./launcher-shower.js";
 import {addLinkToHead, convertRelativeUrlsToAbsolute} from "./util.js";
 
 
@@ -55,6 +56,8 @@ async function main() {
     try {
         if (config.mode === 'impress') {
             await initializeImpress(config)
+        } else if (config.mode === 'shower') {
+            await initializeShower(config)
         } else {
             addLinkToHead('/the-presenter/styles/custom-reveal.css')
             konsole.debug("Added reveal.css stylesheet to document")
@@ -67,7 +70,7 @@ async function main() {
         return
     }
     konsole.log('All done! Enjoy the presentation!')
-    // konsole.done()
+    konsole.done()
 }
 
 function getConfig() {
