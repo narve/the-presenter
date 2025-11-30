@@ -70,6 +70,10 @@ async function main() {
             await initializeReveal(config)
             konsole.log("Reveal initialized")
         }
+        if(document.body.classList.contains('hide-until-ready')) {
+            konsole.log("Removing 'hide-until-ready' class from body")
+            document.body.classList.remove('hide-until-ready')
+        }
         konsole.log('All done! Enjoy the presentation!')
         konsole.done()
     } catch (error) {
@@ -100,9 +104,14 @@ function getConfig() {
         'body'
     ]
 
+    console.log(window.presenterConfig)
+
     const searchParams = new URLSearchParams(window.location.search)
     return {
-        noConsole: searchParams.get('noConsole') === 'true',
+        noConsole:
+            window.presenterConfig !== undefined
+                ? !!window.presenterConfig.noConsole
+                : searchParams.get('noConsole') === 'true',
         url: searchParams.get('url'),
         mode: searchParams.get('mode') || 'reveal',
         shuffle: searchParams.get('shuffle') === 'true',
@@ -110,7 +119,7 @@ function getConfig() {
         rootSelector: searchParams.get('rootSelector')
             ? searchParams.get('rootSelector')
             : rootQuerySelectors.join(", "),
-        slideSelector: searchParams.get('slideSelector') || 'section',
+        slideSelector: searchParams.get('slideSelector') || 'section:not(:has(section))',
         console: konsole,
         // three consecutive white-space-only newlines
         markdownSlideSeparator: searchParams.get('markdownSlideSeparator')

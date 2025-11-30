@@ -8,6 +8,12 @@
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
 
     <style>
+
+        button {
+            margin-top: 1em;
+            margin-bottom: 1em;
+        }
+
         body {
             display: flex;
         }
@@ -67,6 +73,9 @@
 
     <form method="get" action="presenter.html">
         <fieldset>
+            <legend>
+                Mandatory options
+            </legend>
             <label>
                 Content URL (double-click or arrow down to see examples):
                 <input type="text" size="80" name="url"
@@ -89,6 +98,7 @@
                 </select>
             </label>
         </fieldset>
+        <button type="submit">Open The Presenter!</button>
         <fieldset>
             <legend>Impress-specific options</legend>
             <div>
@@ -127,7 +137,8 @@
                 <input type="text" size="80" name="slideSelector" value="">
                 <p>
                     The CSS selector used to find the slide elements
-                    inside the root element. Default is "section".
+                    inside the root element. Default is "section:not(:has(section))"
+                    - meaning any section that does not have any subsections.
                 </p>
             </label>
         </fieldset>
@@ -145,7 +156,6 @@
                 </p>
             </label>
         </fieldset>
-        <button type="submit">Open The Presenter!</button>
     </form>
 
     <article id="faq">
@@ -163,14 +173,29 @@
         </section>
 
         <section>
-            <h2>How do I use this? </h2>
+            <h2>How do I use this?</h2>
             <p>
                 If you are currently authoring an HTML-presentation, just insert this link
                 in the head of the document, including the <code>type=module</code> attribute:
             </p>
             <pre><code>
             &lt;script type="module" src="https://narve.github.io/the-presenter/scripts/main.js"&gt;&lt;/script&gt;
-        </code></pre>
+            </code></pre>
+            <p>
+                See the (source of) <a href="examples/self-contained.html">this self-contained example</a>
+                for some more details, e.g. how to suppress the console output
+                and avoid a flash of unstyled content.
+            </p>
+
+            <p>
+                If you have an online markdown-file or an HTML-file you want to present,
+                just enter the URL of that file in the form above, select the presentation
+                mode/framework you want to use, press the "Open The Presenter!" button,
+                and hope that the content is structured in such a way that The Presenter can
+                handle it🙏.
+            </p>
+
+
         </section>
 
         <section>
@@ -185,13 +210,13 @@
             <h2>Will it work for my web page?</h2>
             <ul>
                 <li>
-                    If your content is made for/with/tested in Reveal or Impress, then yes, probably.
+                    If your content is made for/with/tested in one of the supported presentation frameworks,
+                    then yes, probably.
                 </li>
                 <li>
-                    If your content is structured like most presentations:
-                    A root-element containing multiple section-elements,
-                    where each section is a slide, then yes, probably.
-                    You might have to tune the selectors a bit.
+                    If your content is structured in a non-crappy way - basically
+                    each slide must be a separate <code>section</code>-element (without subsections),
+                    then yes, probably🙏. You might have to tune the selectors a bit.
                 </li>
                 <li>
                     For a random web page: Probably not.
@@ -208,29 +233,29 @@
             </p>
             <p>
                 It doesn't really work offline, but if
-                you load the presentation tool while online, you can then use it offline.
-                Until you close the tab 😁.
+                you load the presentation tool and start the presentation while online,
+                you can then use it offline. Until you close the tab 😁.
             </p>
         </section>
 
-        <section>
-            <h2>Ok, how must my HTML look? </h2>
-            <p>
-                First of all, we need to find the root element - the
-                element containing the actual slides. The queries used for that,
-                in order, is shown below. This can be overridden in the "Advanced" panel.
-            </p>
-            <pre><code>
-            const rootQuerySelectors = [
-                '#impress',
-                '.reveal > .slides',
-                '.presentation',
-                'article',
-                'main',
-                'body'
-            ]
-        </code></pre>
-        </section>
+        <!--        <section>-->
+        <!--            <h2>Ok, how must my HTML look? </h2>-->
+        <!--            <p>-->
+        <!--                First of all, we need to find the root element - the-->
+        <!--                element containing the actual slides. The queries used for that,-->
+        <!--                in order, is shown below. This can be overridden in the "Advanced" panel.-->
+        <!--            </p>-->
+        <!--            <pre><code>-->
+        <!--            const rootQuerySelectors = [-->
+        <!--                '#impress',-->
+        <!--                '.reveal > .slides',-->
+        <!--                '.presentation',-->
+        <!--                'article',-->
+        <!--                'main',-->
+        <!--                'body'-->
+        <!--            ]-->
+        <!--        </code></pre>-->
+        <!--        </section>-->
 
         <section>
             <h2>Bug reports, pull requests etc?</h2>
