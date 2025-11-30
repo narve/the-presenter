@@ -14,23 +14,35 @@ window.onload = async function () {
     await main()
 }
 
-
+/**
+ * @typedef {Object} Config
+ * @property {boolean} noConsole - Whether to hide the console output
+ * @property {string} url - URL of the presentation content to load
+ * @property {string} mode - Presentation framework to use ('reveal', 'impress', or 'shower')
+ * @property {boolean} shuffle - Whether to shuffle slides
+ * @property {boolean} rotate - Whether to rotate slides
+ * @property {string} rootSelector - CSS selector for the presentation root element
+ * @property {string} slideSelector - CSS selector for identifying slides
+ * @property {Konsole} console - Console instance for logging
+ * @property {string} markdownSlideSeparator - Pattern to split markdown into slides
+ */
 async function main() {
 
-    // Get configuration from URL parameters or defaults:
-    const config = getConfig()
+    try {
 
-    // Show the console, unless disabled:
-    if (!config.noConsole) {
-        initializeKonsoleElement(konsole)
-    }
+        // Get configuration from URL parameters or defaults:
+        const config = getConfig()
 
-    konsole.log("Welcome, meatbags! The Presenter is running!")
-    konsole.log("Configuration: " + JSON.stringify(config, null, '  '))
+        // Show the console, unless disabled:
+        if (!config.noConsole) {
+            initializeKonsoleElement(konsole)
+        }
 
-    // Load the content into this document, if a URL is provided:
-    if (config.url) {
-        try {
+        konsole.log("Welcome, meatbags! The Presenter is running!")
+        konsole.log("Configuration: " + JSON.stringify(config, null, '  '))
+
+        // Load the content into this document, if a URL is provided:
+        if (config.url) {
             const article = await loadContent(config)
             if (document.querySelector('body>main')) {
                 konsole.log("Inserting presentation into existing <main> element")
@@ -42,18 +54,12 @@ async function main() {
                 main.appendChild(article)
                 document.body.appendChild(main)
             }
-        } catch (error) {
-            console.error(error)
-            konsole.error("Error fetching presentation content: " + error)
-            return
+        } else {
+            konsole.log("No presentation URL provided - assuming content is already in document.")
+            await normalizeCurrentDocument(config)
         }
-    } else {
-        konsole.log("No presentation URL provided - assuming content is already in document.")
-        konsole.warn('NB: Normalization not implemented yet for local content.')
-    }
 
-    konsole.log(`Preparing to initialize presentation framework '${config.mode}'`)
-    try {
+        konsole.log(`Preparing to initialize presentation framework '${config.mode}'`)
         if (config.mode === 'impress') {
             await initializeImpress(config)
         } else if (config.mode === 'shower') {
@@ -64,16 +70,26 @@ async function main() {
             await initializeReveal(config)
             konsole.log("Reveal initialized")
         }
+        konsole.log('All done! Enjoy the presentation!')
+        konsole.done()
     } catch (error) {
         console.error(error)
-        konsole.error("Error initializing presentation: " + error)
-        return
+        konsole.error("Error BSOD Guru mediation: " + error)
     }
-    konsole.log('All done! Enjoy the presentation!')
-    konsole.done()
 }
 
+async function normalizeCurrentDocument(config) {
+    konsole.warn('NB: Normalization not implemented yet for local content.')
+}
+
+/**
+ * @returns {Config}
+ */
 function getConfig() {
+    // const config = {
+    //     url: 'https://tangen-2it-utvikling.netlify.app/content/html-001',
+    //     mode: 'reveal',
+    // }
 
     const rootQuerySelectors = [
         '#impress',
@@ -85,11 +101,6 @@ function getConfig() {
     ]
 
     const searchParams = new URLSearchParams(window.location.search)
-    // const config = {
-    //     url: 'https://tangen-2it-utvikling.netlify.app/content/html-001',
-    //     mode: 'reveal',
-    // }
-
     return {
         noConsole: searchParams.get('noConsole') === 'true',
         url: searchParams.get('url'),
@@ -103,7 +114,9 @@ function getConfig() {
         console: konsole,
         // three consecutive white-space-only newlines
         markdownSlideSeparator: searchParams.get('markdownSlideSeparator')
-            || /(?:\r?\n\s*){3,}/,
+            || "(?:\\r?\\n\\s*){3,}"
+
+        // || /(?:\r?\n\s*){3,}/,
         // || /^---$`/,
     }
 }
@@ -131,7 +144,7 @@ async function fetchPresentationContent(config) {
     konsole.debug("Actual url: " + url);
     const response = await fetch(url)
     if (!response.ok)
-        throw new Error(`Unable to load presentation content! Status: ${response.status}`)
+        throw new Error(`Unable to load presentation content! Status: ${response.status}, url: ${url}`)
 
     const responseType = response.headers.get('content-type') || 'unknown'
     const responseText = await response.text()
