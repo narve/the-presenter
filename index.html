@@ -49,9 +49,20 @@
 
 <main>
     <h1>The Presenter!</h1>
-    <p>This is a tool to present web-based content in presentation mode.</p>
-    <p>Enter the URL of the content you want to present, and select the presentation mode/framework.</p>
-    <p>Currently, Reveal.JS, Impress and Shower is supported.</p>
+    <p>
+        This is a tool to present web-based content in presentation mode.</p>
+    <p>
+        Enter the URL of the content you want to present, and select the presentation mode/framework.</p>
+    <p>
+        Currently, these three nice presentation frameworks are supported:
+    </p>
+    <ul>
+        <li><a href="https://revealjs.com/">Reveal.JS</a></li>
+        <li><a href="https://impress.js.org/">Impress</a></li>
+        <li><a href="https://shwr.me/">Shower</a></li>
+    </ul>
+
+
     <p>Questions? <a href="#faq">FAQ</a></p>
 
     <form method="get" action="presenter.html">
@@ -129,7 +140,7 @@
                     The expression used to separate between different slides.
                     Default is something like <code>(?:\r?\n\s*){3,}</code>
                     (three consecutive white-space-only lines).
-                    Alternatively, use <code>^---$</code> to separate slides with a
+                    For example, use <code>^---$</code> to separate slides with a
                     line containing only three dashes.
                 </p>
             </label>
