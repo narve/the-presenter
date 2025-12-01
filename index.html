@@ -103,10 +103,6 @@
         <li><a href="https://impress.js.org/">Impress</a></li>
         <li><a href="https://shwr.me/">Shower</a></li>
     </ul>
-    <p>
-        NB: The content are fetched through a CORS-proxy, so use with care!
-    </p>
-
 
     <p>Questions? <a href="#faq">FAQ</a></p>
 
@@ -135,6 +131,11 @@
                     <option value="impress">Impress</option>
                     <option value="shower">Shower</option>
                 </select>
+            </label>
+            <label>
+                Allow using a CORS-proxy?
+                <input type="checkbox" name="allowCorsProxy" value="true">
+                <p>Not recommended for security reasons - use with care!</p>
             </label>
         </fieldset>
         <button type="submit">Open The Presenter!</button>

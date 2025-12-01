@@ -22,6 +22,8 @@ window.konsole = konsole
  * @property {string} slideSelector - CSS selector for identifying slides
  * @property {Konsole} console - Console instance for logging
  * @property {string} markdownSlideSeparator - Pattern to split markdown into slides
+ * @property {string} allowCorsProxy - Whether to allow CORS proxying (not totally safe)
+ * @property {string} corsProxyUrl
  */
 
 
@@ -130,18 +132,16 @@ function getConfig() {
         console: konsole,
         // three consecutive white-space-only newlines
         markdownSlideSeparator: searchParams.get('markdownSlideSeparator')
-            || "(?:\\r?\\n\\s*){3,}"
+            || "(?:\\r?\\n\\s*){3,}",
+        // Alternative patterns:
 
         // || /(?:\r?\n\s*){3,}/,
         // || /^---$`/,
+        allowCorsProxy: searchParams.get('allowCorsProxy') === 'true',
     }
 }
 
 async function fetchPresentationContent(config) {
-
-    // This one is often blocked...
-    // const proxyUrl = 'https://corsproxy.io/?'
-    const proxyUrl = 'https://api.cors.lol?url='
 
     konsole.log("Fetching the presentation from " + config.url);
     let url = config.url
@@ -162,13 +162,24 @@ async function fetchPresentationContent(config) {
         // CORS error or network error
         if (error instanceof TypeError) {
             konsole.error("CORS or network error when fetching URL directly: " + error.message)
-            konsole.error("Retrying once, using CORS proxy...")
-            // If the URL is localhost, do not use the proxy
+            // If the URL is localhost, do not try to use a proxy.
+            const isLocalhost = url.match(/http(s)?:\/\/localhost/)
             // Otherwise, use CORS proxy to avoid browser CORS errors
-            url = url.match(/http(s)?:\/\/localhost/)
-                ? url
-                : proxyUrl + encodeURIComponent(url)
-            response = await fetch(url)
+            if (!isLocalhost && config.allowCorsProxy) {
+                // This one is often blocked...
+                // const proxyUrl = 'https://corsproxy.io/?'
+                const proxyUrl = config.corsProxyUrl || 'https://api.cors.lol?url='
+
+                konsole.error("Retrying once, using CORS proxy...")
+                url = proxyUrl + encodeURIComponent(url)
+                response = await fetch(url, {
+                    mode: 'cors',
+                })
+            } else {
+                konsole.error("Perhaps try allowing CORS? (allowCorsProxy=true)")
+                // No use continuing, response is undefined
+                throw new Error('Aborting. ')
+            }
         }
     }
     if (!response.ok)
