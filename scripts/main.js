@@ -1,18 +1,15 @@
 // noinspection JSFileReferences
 
 import {Konsole, initializeKonsoleElement} from './konsole.js';
+
 import {initializeReveal} from "./launcher-reveal.js";
 import {initializeImpress} from "./launcher-impress.js";
 import {initializeShower} from "./launcher-shower.js";
-import {addLinkToHead, convertRelativeUrlsToAbsolute} from "./util.js";
 
 
 const konsole = new Konsole()
 window.konsole = konsole
 
-window.onload = async function () {
-    await main()
-}
 
 /**
  * @typedef {Object} Config
@@ -26,7 +23,13 @@ window.onload = async function () {
  * @property {Konsole} console - Console instance for logging
  * @property {string} markdownSlideSeparator - Pattern to split markdown into slides
  */
-async function main() {
+
+
+/**
+ * Main function to present the loaded content as a presentation.
+ * @returns {Promise<void>}
+ */
+export async function present() {
 
     try {
 
@@ -70,15 +73,19 @@ async function main() {
             await initializeReveal(config)
             konsole.log("Reveal initialized")
         }
-        if(document.body.classList.contains('hide-until-ready')) {
-            konsole.log("Removing 'hide-until-ready' class from body")
-            document.body.classList.remove('hide-until-ready')
-        }
+        markAsReady()
         konsole.log('All done! Enjoy the presentation!')
         konsole.done()
     } catch (error) {
         console.error(error)
         konsole.error("Error BSOD Guru mediation: " + error)
+    }
+}
+
+export function markAsReady() {
+    if (document.body.classList.contains('hide-until-ready')) {
+        konsole.log("Removing 'hide-until-ready' class from body")
+        document.body.classList.remove('hide-until-ready')
     }
 }
 
@@ -239,3 +246,25 @@ async function loadContent(config) {
     return article
 }
 
+
+export function addLinkToHead(href, rel = 'stylesheet', konsole = window.konsole) {
+    const link = document.createElement('link')
+    link.rel = rel
+    link.href = href
+    document.head.appendChild(link)
+    konsole.debug('Added link to head: ' + link.innerHTML)
+}
+
+/// Fix relative URLs for images, styles, scripts, etc.
+export function convertRelativeUrlsToAbsolute(doc, originalDocumentUrl, konsole = window.konsole) {
+    // for all images, fix the src attribute:
+    const images = doc.querySelectorAll('img')
+    images.forEach(img => {
+        const originalSrc = img.getAttribute('src')
+        const resolvedSrc = new URL(originalSrc, originalDocumentUrl).href
+        img.setAttribute('src', resolvedSrc)
+        konsole.debug(`Fixed image src: ${originalSrc} -> ${resolvedSrc}`)
+    });
+    if (images.length > 0)
+        konsole.log(`Fixed ${images.length} image urls`)
+}

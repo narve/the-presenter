@@ -1,6 +1,6 @@
 // noinspection JSUrlImportUsage
 
-import {addLinkToHead} from "./util.js";
+import {addLinkToHead} from "./main.js";
 
 export async function initializeImpress(config) {
     const konsole = config.console
