@@ -139,7 +139,9 @@ function getConfig() {
 
 async function fetchPresentationContent(config) {
 
-    const proxyUrl = 'https://corsproxy.io/?'
+    // This one is often blocked...
+    // const proxyUrl = 'https://corsproxy.io/?'
+    const proxyUrl = 'https://api.cors.lol?url='
 
     konsole.log("Fetching the presentation from " + config.url);
     let url = config.url
