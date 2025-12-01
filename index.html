@@ -304,6 +304,29 @@
         <!--        </section>-->
 
         <section>
+            <h2>What is this CORS thing?</h2>
+            <p>
+                Sometimes the content you want to present is hosted on a server
+                that does not allow other web pages (like this presenter tool)
+                to download that content. This is a security feature in web browsers
+                called CORS (Cross-Origin Resource Sharing).
+            </p>
+            <p>
+                If you check the "Allow using a CORS-proxy?" checkbox, The Presenter
+                will try to download the content via a CORS-proxy server. This server
+                will download the content for you, and then send it to your browser
+                with the correct CORS-headers. This is not very secure, as the proxy
+                server will be able to see all the content you are downloading - and also
+                modifying it if it wants to.
+            </p>
+            <p>
+                So use this feature with care! Also, some corporate networks
+                block access to (some) public CORS-proxy servers, so it may still
+                not work.
+            </p>
+        </section>
+
+        <section>
             <h2>Bug reports, pull requests etc?</h2>
             <p>
                 Sure, feel free to try that. I made this mostly for fun,
