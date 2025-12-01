@@ -153,14 +153,24 @@ async function fetchPresentationContent(config) {
         konsole.debug("Converted non-absolute URL to absolute: " + config.url + " -> " + url)
     }
 
-    // If the URL is localhost, do not use the proxy
-    // Otherwise, use CORS proxy to avoid browser CORS errors
-    url = url.match(/http(s)?:\/\/localhost/)
-        ? url
-        : proxyUrl + encodeURIComponent(url)
 
     konsole.debug("Actual url: " + url);
-    const response = await fetch(url)
+    let response;
+    try {
+        response = await fetch(url)
+    } catch (error) {
+        // CORS error or network error
+        if (error instanceof TypeError) {
+            konsole.error("CORS or network error when fetching URL directly: " + error.message)
+            konsole.error("Retrying once, using CORS proxy...")
+            // If the URL is localhost, do not use the proxy
+            // Otherwise, use CORS proxy to avoid browser CORS errors
+            url = url.match(/http(s)?:\/\/localhost/)
+                ? url
+                : proxyUrl + encodeURIComponent(url)
+            response = await fetch(url)
+        }
+    }
     if (!response.ok)
         throw new Error(`Unable to load presentation content! Status: ${response.status}, url: ${url}`)
 
