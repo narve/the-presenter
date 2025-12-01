@@ -32,14 +32,15 @@
                 display: block;
             }
 
-            p {
+            /* Updated: style for small inside label */
+            small {
                 font-size: small;
                 font-weight: bold;
                 margin: 0.5em 0 0 1em;
-
-                &::before {
-                    content: "ℹ️ ";
-                }
+                display: block;
+            }
+            label small::before {
+                content: "ℹ️ ";
             }
         }
 
@@ -137,7 +138,7 @@
             <label>
                 Allow using a CORS-proxy?
                 <input type="checkbox" name="allowCorsProxy" value="true">
-                <p>Not recommended for security reasons - use with care!</p>
+                <small>Not recommended for security reasons - see FAQ!</small>
             </label>
         </fieldset>
         <button type="submit">Open The Presenter!</button>
@@ -147,15 +148,15 @@
                 <label>
                     Shuffle Slides (if supported).
                     <input type="checkbox" name="shuffle">
-                    <p>
+                    <small>
                         For Impress: This does not shuffle
                         the order of the slides, but the positioning.
                         This means a lot more moving around when presenting,
                         for good or bad 😄
-                    </p>
-                    <p>
+                    </small>
+                    <small>
                         For Reveal: This will randomize the order of slides.
-                    </p>
+                    </small>
                 </label>
             </div>
             <label>
@@ -168,34 +169,34 @@
             <label>
                 Root element selector:
                 <input type="text" size="80" name="rootSelector" value="">
-                <p>
+                <small>
                     The CSS selector used to find the root element
                     containing the slides. If empty, default selectors
                     will be used.
-                </p>
+                </small>
             </label>
             <label>
                 Slide element selector:
                 <input type="text" size="80" name="slideSelector" value="">
-                <p>
+                <small>
                     The CSS selector used to find the slide elements
                     inside the root element. Default is "section:not(:has(section))"
                     - meaning any section that does not have any subsections.
-                </p>
+                </small>
             </label>
         </fieldset>
         <fieldset>
             <legend>Advanced (Markdown)</legend>
             <label>
-                Slide separator (reg-exp)
+                Slide separator (regexp)
                 <input type="text" size="80" name="markdownSlideSeparator" value="">
-                <p>
+                <small>
                     The expression used to separate between different slides.
                     Default is something like <code>(?:\r?\n\s*){3,}</code>
                     (three consecutive white-space-only lines).
                     For example, use <code>^---$</code> to separate slides with a
                     line containing only three dashes.
-                </p>
+                </small>
             </label>
         </fieldset>
     </form>
