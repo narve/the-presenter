@@ -273,7 +273,11 @@ async function loadContent(config) {
 export function addLinkToHead(href, rel = 'stylesheet', konsole = window.konsole) {
     const link = document.createElement('link')
     link.rel = rel
-    link.href = "https://narve.github.io/" + href
+    if(href.startsWith('http://') || href.startsWith('https://')) {
+        link.href = href
+    } else {
+        link.href = "https://narve.github.io/" + href
+    }
     document.head.appendChild(link)
     konsole.debug('Added link to head: ' + link.innerHTML)
 }
