@@ -20,9 +20,28 @@ button.style = `position: fixed;
 
 button.onclick = async function () {
     await present()
+    button.remove()
+    // await document.body.requestFullscreen()
 }
 
 document.body.appendChild(button)
+
+document.addEventListener('fullscreenchange', () => {
+    if (document.fullscreenElement) {
+        document.body.setAttribute('data-fullscreen', true)
+    } else {
+        document.body.removeAttribute('data-fullscreen');
+    }
+});
+
+// const style = document.createElement('style');
+// style.textContent = `
+// :root[data-fullscreen] .present-button {
+//   display: none;
+// }
+// `;
+// document.body.appendChild(style);
+
 
 console.log('Present button added to document body.');
 
