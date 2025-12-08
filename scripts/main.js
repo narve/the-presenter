@@ -116,15 +116,23 @@ function getConfig() {
     console.log(window.presenterConfig)
 
     const searchParams = new URLSearchParams(window.location.search)
+
+    const getBool = (paramName, defaultValue = false) => {
+        if (window.presenterConfig !== undefined && window.presenterConfig[paramName] !== undefined) {
+            return !!window.presenterConfig[paramName]
+        } else if (searchParams.get(paramName) !== null) {
+            return searchParams.get(paramName) === 'true' || searchParams.get(paramName) === '1' || searchParams.get(paramName) === 'on'
+        } else {
+            return defaultValue
+        }
+    }
+
     return {
-        noConsole:
-            window.presenterConfig !== undefined
-                ? !!window.presenterConfig.noConsole
-                : searchParams.get('noConsole') === 'true',
+        noConsole: getBool('noConsole'),
         url: searchParams.get('url'),
         mode: searchParams.get('mode') || 'reveal',
-        shuffle: searchParams.get('shuffle') === 'true',
-        rotate: searchParams.get('rotate') === 'true',
+        shuffle: getBool('shuffle'),
+        rotate: getBool('rotate'),
         rootSelector: searchParams.get('rootSelector')
             ? searchParams.get('rootSelector')
             : rootQuerySelectors.join(", "),
@@ -137,7 +145,7 @@ function getConfig() {
 
         // || /(?:\r?\n\s*){3,}/,
         // || /^---$`/,
-        allowCorsProxy: searchParams.get('allowCorsProxy') === 'true',
+        allowCorsProxy: getBool('allowCorsProxy'),
     }
 }
 
@@ -176,7 +184,7 @@ async function fetchPresentationContent(config) {
                     mode: 'cors',
                 })
             } else {
-                konsole.error("Perhaps try allowing CORS? (allowCorsProxy=true)")
+                konsole.error("Perhaps try allowing CORS? (add ?allowCorsProxy=true to url)")
                 // No use continuing, response is undefined
                 throw new Error('Aborting. ')
             }
@@ -273,7 +281,7 @@ async function loadContent(config) {
 export function addLinkToHead(href, rel = 'stylesheet', konsole = window.konsole) {
     const link = document.createElement('link')
     link.rel = rel
-    if(href.startsWith('http://') || href.startsWith('https://')) {
+    if (href.startsWith('http://') || href.startsWith('https://')) {
         link.href = href
     } else {
         link.href = "https://narve.github.io/" + href

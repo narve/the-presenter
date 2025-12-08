@@ -33,12 +33,14 @@
             }
 
             /* Updated: style for small inside label */
+
             small {
                 font-size: small;
                 font-weight: bold;
                 margin: 0.5em 0 0 1em;
                 display: block;
             }
+
             label small::before {
                 content: "ℹ️ ";
             }
@@ -77,6 +79,36 @@
             animation: octocat-wave 560ms ease-in-out
         }
     }</style>
+
+
+    <script>
+        // I didn't want to include JavaScript here at all, but this
+        // is rather non-obtrusive: just intercept the form submit,
+        // and don't include "default" values in the URL.
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('form').addEventListener('submit', function (e) {
+                e.preventDefault()
+                const form = e.target
+                const params = new URLSearchParams()
+                Array.from(form.elements).forEach(el => {
+                    if (!el.name) return
+                    if (el.type === 'checkbox') {
+                        if (el.checked) params.append(el.name, el.value || 'on')
+                    } else if (el.type === 'radio') {
+                        if (el.checked) params.append(el.name, el.value)
+                    } else if (el.type === 'text') {
+                        if (!!el.value) params.append(el.name, el.value)
+                    } else {
+                        params.append(el.name, el.value)
+                    }
+                });
+                const url = form.action + '?' + params.toString()
+                console.log('Modified query: ', url)
+                window.location.href = url;
+            })
+        })
+    </script>
+
 </head>
 <body>
 
