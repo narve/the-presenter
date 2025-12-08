@@ -126,11 +126,20 @@ function getConfig() {
             return defaultValue
         }
     }
+    const getString = (paramName, defaultValue = false) => {
+        if (window.presenterConfig !== undefined && window.presenterConfig[paramName] !== undefined) {
+            return window.presenterConfig[paramName]
+        } else if (!!searchParams.get(paramName)) {
+            return searchParams.get(paramName)
+        } else {
+            return defaultValue
+        }
+    }
 
     return {
         noConsole: getBool('noConsole'),
-        url: searchParams.get('url'),
-        mode: searchParams.get('mode') || 'reveal',
+        url: getString('url'),
+        mode: getString('mode', 'reveal'),
         shuffle: getBool('shuffle'),
         rotate: getBool('rotate'),
         rootSelector: searchParams.get('rootSelector')
