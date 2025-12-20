@@ -8,7 +8,6 @@
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
 
     <style>
-
         button {
             margin-top: 1em;
             margin-bottom: 1em;
@@ -16,40 +15,119 @@
 
         body {
             display: flex;
+            min-height: 100vh;
         }
 
         main {
             max-width: 40em;
             margin: auto auto;
+            width: 100%;
+            padding: 1em;
+            box-sizing: border-box;
         }
 
         label {
             display: block;
             margin-bottom: 1em;
-            /*min-width: 100em;*/
-
-            input[type="text"] {
-                display: block;
-            }
-
-            p {
-                font-size: small;
-                font-weight: bold;
-                margin: 0.5em 0 0 1em;
-
-                &::before {
-                    content: "ℹ️ ";
-                }
-            }
         }
 
+        input[type="text"] {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        label p {
+            font-size: small;
+            font-weight: bold;
+            margin: 0.5em 0 0 1em;
+        }
+
+        label p::before {
+            content: "ℹ️ ";
+        }
 
         form {
-            /*border: 2px solid black;*/
-            /*min-width: 120em;*/
-            /*width: 120em;*/
+            width: 100%;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 700px) {
+            body {
+                flex-direction: column;
+                padding: 0;
+            }
+
+            main {
+                max-width: 100vw;
+                margin: 0;
+                padding: 0.5em;
+            }
+
+            .github-corner {
+                width: 48px !important;
+                height: 48px !important;
+            }
+
+            .github-corner svg {
+                width: 48px !important;
+                height: 48px !important;
+            }
+        }
+
+        @media (max-width: 500px) {
+            main {
+                padding: 0.2em;
+                font-size: 0.95em;
+            }
+
+            input[type="text"] {
+                font-size: 1em;
+            }
+
+            button {
+                width: 100%;
+                font-size: 1em;
+            }
+
+            .github-corner {
+                width: 36px !important;
+                height: 36px !important;
+            }
+
+            .github-corner svg {
+                width: 36px !important;
+                height: 36px !important;
+            }
         }
     </style>
+
+    <style>
+        .github-corner:hover .octo-arm {
+            animation: octocat-wave 560ms ease-in-out
+        }
+
+        @keyframes octocat-wave {
+            0%, 100% {
+                transform: rotate(0)
+            }
+            20%, 60% {
+                transform: rotate(-25deg)
+            }
+            40%, 80% {
+                transform: rotate(10deg)
+            }
+        }
+
+        @media (max-width: 500px) {
+            .github-corner:hover .octo-arm {
+                animation: none
+            }
+
+            .github-corner .octo-arm {
+                animation: octocat-wave 560ms ease-in-out
+            }
+        }</style>
 </head>
 <body>
 
@@ -63,31 +141,7 @@
               fill="currentColor" class="octo-body"></path>
     </svg>
 </a>
-<style>.github-corner:hover .octo-arm {
-    animation: octocat-wave 560ms ease-in-out
-}
 
-@keyframes octocat-wave {
-    0%, 100% {
-        transform: rotate(0)
-    }
-    20%, 60% {
-        transform: rotate(-25deg)
-    }
-    40%, 80% {
-        transform: rotate(10deg)
-    }
-}
-
-@media (max-width: 500px) {
-    .github-corner:hover .octo-arm {
-        animation: none
-    }
-
-    .github-corner .octo-arm {
-        animation: octocat-wave 560ms ease-in-out
-    }
-}</style>
 
 <main>
     <h1>The Presenter!</h1>
