@@ -6,32 +6,47 @@
     <link rel="icon" href="../favicon.svg" type="image/svg+xml">
     <title>Self-contained presentation</title>
 
-    <!-- Configuration for The Presenter - to suppress my beautiful konsole -->
+    <!-- Configuration for The Presenter - e.g. to suppress my beautiful konsole, if you insist -->
     <script>
         window.presenterConfig = {
             noConsole: false,
+            mode: "impress",
+            rotate: true,
+            shuffle: true,
         }
     </script>
 
     <!--
         Hide everything until The Presenter is ready, to avoid
-            a flash of unstyled content. This class will be removed
-            by The Presenter when it is ready.
-            There will still be a brief flash of unstyled content
-            if the presentation e.g. changes the background color.
-            Set that color manually in that case.
+        a flash of unstyled content. This class will be removed
+        by The Presenter when it is ready.
+        There will still be a brief flash of unstyled content
+        if the presentation e.g. changes the background color.
+        Set that color manually if this bothers you.
      -->
     <style>
         .hide-until-ready *:not(output) {
             display: none;
         }
+
+        body {
+            background: #282A36; /* Default reveal background color */
+        }
     </style>
 
     <!-- For local development -->
-    <script type="module" src="../scripts/main.js"></script>
 
-    <!-- For actual use, load from GitHub Pages -->
-    <!--    <script type="module" src="https://narve.github.io/the-presenter/scripts/main.js"></script>-->
+    <!-- Start presentation immediately -->
+<!--    <script type="module" src="../scripts/present.js"></script>-->
+
+    <!-- Show present button -->
+        <script type="module" src="../scripts/present-button.js"></script>
+
+    <!-- Present conditionally based on URL parameter "present" - e.g. http://...mydocument?present -->
+    <!--    <script type="module" src="../scripts/present-conditionally.js"></script>-->
+
+    <!-- For actual use, use full absolute URL (from GitHub pages), e.g.  -->
+    <!--    <script type="module" src="https://narve.github.io/the-presenter/scripts/present-button.js"></script>-->
 
 </head>
 <body class="hide-until-ready">
@@ -44,7 +59,7 @@
 -->
 
 <main>
-    <article>
+    <article class="presentation">
         <section>
             <h1>Slide 1</h1>
         </section>

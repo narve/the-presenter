@@ -1,6 +1,6 @@
 // noinspection JSFileReferences
 
-import {addLinkToHead} from "./util.js";
+import {addLinkToHead} from "./main.js";
 
 export async function initializeShower(config) {
 

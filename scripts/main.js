@@ -1,18 +1,15 @@
 // noinspection JSFileReferences
 
 import {Konsole, initializeKonsoleElement} from './konsole.js';
+
 import {initializeReveal} from "./launcher-reveal.js";
 import {initializeImpress} from "./launcher-impress.js";
 import {initializeShower} from "./launcher-shower.js";
-import {addLinkToHead, convertRelativeUrlsToAbsolute} from "./util.js";
 
 
 const konsole = new Konsole()
 window.konsole = konsole
 
-window.onload = async function () {
-    await main()
-}
 
 /**
  * @typedef {Object} Config
@@ -25,8 +22,16 @@ window.onload = async function () {
  * @property {string} slideSelector - CSS selector for identifying slides
  * @property {Konsole} console - Console instance for logging
  * @property {string} markdownSlideSeparator - Pattern to split markdown into slides
+ * @property {string} allowCorsProxy - Whether to allow CORS proxying (not totally safe)
+ * @property {string} corsProxyUrl
  */
-async function main() {
+
+
+/**
+ * Main function to present the loaded content as a presentation.
+ * @returns {Promise<void>}
+ */
+export async function present() {
 
     try {
 
@@ -70,15 +75,19 @@ async function main() {
             await initializeReveal(config)
             konsole.log("Reveal initialized")
         }
-        if(document.body.classList.contains('hide-until-ready')) {
-            konsole.log("Removing 'hide-until-ready' class from body")
-            document.body.classList.remove('hide-until-ready')
-        }
+        markAsReady()
         konsole.log('All done! Enjoy the presentation!')
         konsole.done()
     } catch (error) {
         console.error(error)
         konsole.error("Error BSOD Guru mediation: " + error)
+    }
+}
+
+export function markAsReady() {
+    if (document.body.classList.contains('hide-until-ready')) {
+        konsole.log("Removing 'hide-until-ready' class from body")
+        document.body.classList.remove('hide-until-ready')
     }
 }
 
@@ -107,15 +116,32 @@ function getConfig() {
     console.log(window.presenterConfig)
 
     const searchParams = new URLSearchParams(window.location.search)
+
+    const getBool = (paramName, defaultValue = false) => {
+        if (window.presenterConfig !== undefined && window.presenterConfig[paramName] !== undefined) {
+            return !!window.presenterConfig[paramName]
+        } else if (searchParams.get(paramName) !== null) {
+            return searchParams.get(paramName) === 'true' || searchParams.get(paramName) === '1' || searchParams.get(paramName) === 'on'
+        } else {
+            return defaultValue
+        }
+    }
+    const getString = (paramName, defaultValue = false) => {
+        if (window.presenterConfig !== undefined && window.presenterConfig[paramName] !== undefined) {
+            return window.presenterConfig[paramName]
+        } else if (!!searchParams.get(paramName)) {
+            return searchParams.get(paramName)
+        } else {
+            return defaultValue
+        }
+    }
+
     return {
-        noConsole:
-            window.presenterConfig !== undefined
-                ? !!window.presenterConfig.noConsole
-                : searchParams.get('noConsole') === 'true',
-        url: searchParams.get('url'),
-        mode: searchParams.get('mode') || 'reveal',
-        shuffle: searchParams.get('shuffle') === 'true',
-        rotate: searchParams.get('rotate') === 'true',
+        noConsole: getBool('noConsole'),
+        url: getString('url'),
+        mode: getString('mode', 'reveal'),
+        shuffle: getBool('shuffle'),
+        rotate: getBool('rotate'),
         rootSelector: searchParams.get('rootSelector')
             ? searchParams.get('rootSelector')
             : rootQuerySelectors.join(", "),
@@ -123,16 +149,16 @@ function getConfig() {
         console: konsole,
         // three consecutive white-space-only newlines
         markdownSlideSeparator: searchParams.get('markdownSlideSeparator')
-            || "(?:\\r?\\n\\s*){3,}"
+            || "(?:\\r?\\n\\s*){3,}",
+        // Alternative patterns:
 
         // || /(?:\r?\n\s*){3,}/,
         // || /^---$`/,
+        allowCorsProxy: getBool('allowCorsProxy'),
     }
 }
 
 async function fetchPresentationContent(config) {
-
-    const proxyUrl = 'https://corsproxy.io/?'
 
     konsole.log("Fetching the presentation from " + config.url);
     let url = config.url
@@ -144,14 +170,35 @@ async function fetchPresentationContent(config) {
         konsole.debug("Converted non-absolute URL to absolute: " + config.url + " -> " + url)
     }
 
-    // If the URL is localhost, do not use the proxy
-    // Otherwise, use CORS proxy to avoid browser CORS errors
-    url = url.match(/http(s)?:\/\/localhost/)
-        ? url
-        : proxyUrl + encodeURIComponent(url)
 
     konsole.debug("Actual url: " + url);
-    const response = await fetch(url)
+    let response;
+    try {
+        response = await fetch(url)
+    } catch (error) {
+        // CORS error or network error
+        if (error instanceof TypeError) {
+            konsole.error("CORS or network error when fetching URL directly: " + error.message)
+            // If the URL is localhost, do not try to use a proxy.
+            const isLocalhost = url.match(/http(s)?:\/\/localhost/)
+            // Otherwise, use CORS proxy to avoid browser CORS errors
+            if (!isLocalhost && config.allowCorsProxy) {
+                // This one is often blocked...
+                // const proxyUrl = 'https://corsproxy.io/?'
+                const proxyUrl = config.corsProxyUrl || 'https://api.cors.lol?url='
+
+                konsole.error("Retrying once, using CORS proxy...")
+                url = proxyUrl + encodeURIComponent(url)
+                response = await fetch(url, {
+                    mode: 'cors',
+                })
+            } else {
+                konsole.error("Perhaps try allowing CORS? (add ?allowCorsProxy=true to url)")
+                // No use continuing, response is undefined
+                throw new Error('Aborting. ')
+            }
+        }
+    }
     if (!response.ok)
         throw new Error(`Unable to load presentation content! Status: ${response.status}, url: ${url}`)
 
@@ -239,3 +286,29 @@ async function loadContent(config) {
     return article
 }
 
+
+export function addLinkToHead(href, rel = 'stylesheet', konsole = window.konsole) {
+    const link = document.createElement('link')
+    link.rel = rel
+    if (href.startsWith('http://') || href.startsWith('https://')) {
+        link.href = href
+    } else {
+        link.href = "https://narve.github.io/" + href
+    }
+    document.head.appendChild(link)
+    konsole.debug('Added link to head: ' + link.innerHTML)
+}
+
+/// Fix relative URLs for images, styles, scripts, etc.
+export function convertRelativeUrlsToAbsolute(doc, originalDocumentUrl, konsole = window.konsole) {
+    // for all images, fix the src attribute:
+    const images = doc.querySelectorAll('img')
+    images.forEach(img => {
+        const originalSrc = img.getAttribute('src')
+        const resolvedSrc = new URL(originalSrc, originalDocumentUrl).href
+        img.setAttribute('src', resolvedSrc)
+        konsole.debug(`Fixed image src: ${originalSrc} -> ${resolvedSrc}`)
+    });
+    if (images.length > 0)
+        konsole.log(`Fixed ${images.length} image urls`)
+}

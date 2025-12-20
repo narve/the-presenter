@@ -1,6 +1,6 @@
 // noinspection JSUrlImportUsage
 
-import {addLinkToHead} from "./util.js";
+import {addLinkToHead} from "./main.js";
 
 export async function initializeImpress(config) {
     const konsole = config.console
@@ -36,7 +36,7 @@ export async function initializeImpress(config) {
         .forEach(el => el.remove())
 
     // Add some custom css for impress-narve:
-    addLinkToHead('../styles/impress-narve.css')
+    addLinkToHead('/the-presenter/styles/impress-narve.css')
 
     // Apply the default options to the root element,
     // if they are not already set. Mostly for

@@ -1,4 +1,4 @@
-import {addLinkToHead} from "./util.js";
+import {addLinkToHead} from "./main.js";
 
 export function initializeKonsoleElement(konsole = window.konsole) {
     addLinkToHead('/the-presenter/styles/konsole.css')

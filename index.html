@@ -37,13 +37,13 @@
             box-sizing: border-box;
         }
 
-        label p {
+        label small {
             font-size: small;
             font-weight: bold;
             margin: 0.5em 0 0 1em;
         }
 
-        label p::before {
+        label small::before {
             content: "ℹ️ ";
         }
 
@@ -127,7 +127,53 @@
             .github-corner .octo-arm {
                 animation: octocat-wave 560ms ease-in-out
             }
-        }</style>
+        }
+
+    </style>
+</head>
+<body>
+
+<a href="https://github.com/narve/the-presenter" class="github-corner" aria-label="View source on GitHub">
+    <svg width="80" height="80" viewBox="0 0 250 250"
+         style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+
+
+
+    <script>
+        // I didn't want to include JavaScript here at all, but this
+        // is rather non-obtrusive: just intercept the form submit,
+        // and don't include "default" values in the URL.
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('form').addEventListener('submit', function (e) {
+                e.preventDefault()
+                const form = e.target
+                const params = new URLSearchParams()
+                Array.from(form.elements).forEach(el => {
+                    if (!el.name) return
+                    if (el.type === 'checkbox') {
+                        if (el.checked) params.append(el.name, el.value || 'on')
+                    } else if (el.type === 'radio') {
+                        if (el.checked) params.append(el.name, el.value)
+                    } else if (el.type === 'text') {
+                        if (!!el.value) params.append(el.name, el.value)
+                    } else {
+                        params.append(el.name, el.value)
+                    }
+                });
+                const url = form.action + '?' + params.toString()
+                console.log('Modified query: ', url)
+                window.location.href = url;
+            })
+        })
+    </script>
+
 </head>
 <body>
 
@@ -193,6 +239,11 @@
                     <option value="shower">Shower</option>
                 </select>
             </label>
+            <label>
+                Allow using a CORS-proxy?
+                <input type="checkbox" name="allowCorsProxy" value="true">
+                <small>Not recommended for security reasons - see FAQ!</small>
+            </label>
         </fieldset>
         <button type="submit">Open The Presenter!</button>
         <fieldset>
@@ -201,15 +252,15 @@
                 <label>
                     Shuffle Slides (if supported).
                     <input type="checkbox" name="shuffle">
-                    <p>
+                    <small>
                         For Impress: This does not shuffle
                         the order of the slides, but the positioning.
                         This means a lot more moving around when presenting,
                         for good or bad 😄
-                    </p>
-                    <p>
+                    </small>
+                    <small>
                         For Reveal: This will randomize the order of slides.
-                    </p>
+                    </small>
                 </label>
             </div>
             <label>
@@ -222,34 +273,34 @@
             <label>
                 Root element selector:
                 <input type="text" size="80" name="rootSelector" value="">
-                <p>
+                <small>
                     The CSS selector used to find the root element
                     containing the slides. If empty, default selectors
                     will be used.
-                </p>
+                </small>
             </label>
             <label>
                 Slide element selector:
                 <input type="text" size="80" name="slideSelector" value="">
-                <p>
+                <small>
                     The CSS selector used to find the slide elements
                     inside the root element. Default is "section:not(:has(section))"
                     - meaning any section that does not have any subsections.
-                </p>
+                </small>
             </label>
         </fieldset>
         <fieldset>
             <legend>Advanced (Markdown)</legend>
             <label>
-                Slide separator (reg-exp)
+                Slide separator (regexp)
                 <input type="text" size="80" name="markdownSlideSeparator" value="">
-                <p>
+                <small>
                     The expression used to separate between different slides.
                     Default is something like <code>(?:\r?\n\s*){3,}</code>
                     (three consecutive white-space-only lines).
                     For example, use <code>^---$</code> to separate slides with a
                     line containing only three dashes.
-                </p>
+                </small>
             </label>
         </fieldset>
     </form>
@@ -275,11 +326,17 @@
                 in the head of the document, including the <code>type=module</code> attribute:
             </p>
             <pre><code>
-            &lt;script type="module" src="https://narve.github.io/the-presenter/scripts/main.js"&gt;&lt;/script&gt;
+            &lt;script type="module" src="https://narve.github.io/the-presenter/scripts/present.js"&gt;&lt;/script&gt;
             </code></pre>
             <p>
-                See the (source of) <a href="examples/self-contained.html">this self-contained example</a>
-                for some more details, e.g. how to suppress the console output
+                This will start the presentation immediately. You can also add a "Present"-button
+                or make the presentation start conditionally based on a URL parameter.
+            </p>
+            <p>
+                See <a href="examples/self-contained.html">this self-contained example</a>
+                (<a href="https://github.com/narve/the-presenter/blob/main/examples/self-contained.html">source</a>)
+
+                for more details and examples, also how to suppress the console output
                 and avoid a flash of unstyled content.
             </p>
 
@@ -352,6 +409,29 @@
         <!--            ]-->
         <!--        </code></pre>-->
         <!--        </section>-->
+
+        <section>
+            <h2>What is this CORS thing?</h2>
+            <p>
+                Sometimes the content you want to present is hosted on a server
+                that does not allow other web pages (like this presenter tool)
+                to download that content. This is a security feature in web browsers
+                called CORS (Cross-Origin Resource Sharing).
+            </p>
+            <p>
+                If you check the "Allow using a CORS-proxy?" checkbox, The Presenter
+                will try to download the content via a CORS-proxy server. This server
+                will download the content for you, and then send it to your browser
+                with the correct CORS-headers. This is not very secure, as the proxy
+                server will be able to see all the content you are downloading - and also
+                modifying it if it wants to.
+            </p>
+            <p>
+                So use this feature with care! Also, some corporate networks
+                block access to (some) public CORS-proxy servers, so it may still
+                not work.
+            </p>
+        </section>
 
         <section>
             <h2>Bug reports, pull requests etc?</h2>

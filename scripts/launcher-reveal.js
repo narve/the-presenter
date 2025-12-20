@@ -54,7 +54,7 @@ export async function initializeReveal(config) {
 
     // Add copy button to code-blocks:
     const copyButtonLabel = "📋";
-    let blocks = document.querySelectorAll("pre:not(.mermaid):not(.no-copy)");
+    let blocks = document.querySelectorAll("pre:not(.mermaid):not(.no-copy):has(code), pre.copy");
     blocks.forEach((block) => {
         // only add button if browser supports Clipboard API
         if (navigator.clipboard) {
