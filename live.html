@@ -77,25 +77,90 @@
     <h1>Live Markdown Presenter</h1>
     <label for="markdown-input">
         Paste or write your Markdown below, then click "Start Presentation" to view it as
-        slides. Use three consecutive blank lines to separate slides.
+        slides. Use three consecutive blank lines to separate slides - or change
+        the separator in the form below if you prefer something else.
     </label>
-    <textarea id="markdown-input" placeholder="# Welcome\n\n---\n\n## Slide 2\n\nSome content..."></textarea>
+
+    <p>
+        <label>
+            Slide separator (regexp):
+            The expression used to separate between different slides.
+            Default is something like <code>(?:\r?\n\s*){3,}</code>
+            (three consecutive white-space-only lines).
+            For example, use <code>^---$</code> to separate slides with a
+            line containing only three dashes.
+            <input type="text" size="80" name="markdownSlideSeparator" id="markdownSlideSeparator" value="">
+        </label>
+    </p>
+
+    <p>
+        The presentation will launch in a new tab, which can be kept in sync with your presentation,
+        if you enable "Live update presentation".
+    </p>
+    <p>
+        If you enable "Save content to local storage", your Markdown content will be saved in your
+        browser's local storage, so it will persist across page reloads.
+    </p>
+    <p>
+        When you start the presentation, a unique URL will be generated for it in the new tab.
+        This link can also be used to share the presentation with others.
+    </p>
+
+    <textarea id="markdown-input" placeholder="# MyPresentation! \n\n\n\n## Slide 2\n\n\n\nSome content..."># MyPresentation!
+
+About something cool
+
+
+
+## Slide 2
+Some more content...
+
+
+
+### Slide 3
+Even more content...</textarea>
     <div style="margin-bottom:1em;">
         <label style="font-size:0.95em;">
             <input type="checkbox" id="live-update-checkbox" style="vertical-align:middle;"> Live update presentation
+        </label>
+    </div>
+    <div style="margin-bottom:1em;">
+        <label style="font-size:0.95em;">
+            <input type="checkbox" id="save-local-checkbox" style="vertical-align:middle;"> Save content to local
+            storage
         </label>
     </div>
     <button id="start-btn">Start Presentation</button>
     <p style="font-size:small;color:#888;">Powered by <a href="https://github.com/narve/the-presenter" target="_blank">The
         Presenter</a></p>
 </main>
+
+
 <script type="module">
-    // This script assumes scripts/main.js or similar can be reused for presentation logic.
-    // We'll create a Blob URL for the markdown and launch presenter.html with it.
+    // We'll just create a Blob URL for the Markdown and launch the presenter with it.
 
     const btn = document.getElementById('start-btn');
     const textarea = document.getElementById('markdown-input');
     const liveCheckbox = document.getElementById('live-update-checkbox');
+    const saveLocalCheckbox = document.getElementById('save-local-checkbox');
+    const LOCAL_KEY = 'live_presenter_markdown';
+
+    // Load from localStorage on page load
+    const saved = localStorage.getItem(LOCAL_KEY);
+    if (saved) textarea.value = saved;
+
+    // Save to localStorage on input if enabled
+    textarea.addEventListener('input', () => {
+        if (saveLocalCheckbox.checked) {
+            localStorage.setItem(LOCAL_KEY, textarea.value);
+        }
+    });
+    // If user checks the box, save immediately
+    saveLocalCheckbox.addEventListener('change', () => {
+        if (saveLocalCheckbox.checked) {
+            localStorage.setItem(LOCAL_KEY, textarea.value);
+        }
+    });
 
     let presenterWindow = null;
     let lastBlobUrl = null;
@@ -107,7 +172,12 @@
         const blob = new Blob([md], {type: 'text/markdown'});
         const url = URL.createObjectURL(blob);
         lastBlobUrl = url;
-        const presenterUrl = `presenter.html?url=${encodeURIComponent(url)}&mode=reveal&noConsole=true`;
+        let presenterUrl = `presenter.html?mode=reveal&noConsole=true`;
+        const separator = document.getElementById('markdownSlideSeparator').value.trim();
+        if (separator) {
+            presenterUrl += `&markdownSlideSeparator=${encodeURIComponent(separator)}`;
+        }
+        presenterUrl += `&url=${encodeURIComponent(url)}`;
         if (presenterWindow && !presenterWindow.closed) {
             presenterWindow.location.replace(presenterUrl);
         } else {
@@ -132,8 +202,6 @@
             }
         }
     });
-
-    // Optional: If the user unchecks live update, do nothing special (presentation stays as last updated)
 </script>
 </body>
 </html>
